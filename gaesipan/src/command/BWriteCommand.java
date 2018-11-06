@@ -5,14 +5,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import gaesipanDAO.gDAO;
 
-public class BDeleteCommand implements BCommand {
+public class BWriteCommand implements BCommand {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		
-		String seq = request.getParameter("seq");
+		String author = request.getParameter("author");
+		String title = request.getParameter("title");
+		String contents = request.getParameter("contents");
+		
 		gDAO dao = new gDAO();
-		dao.delete(seq);
+		dao.write(author, title, contents);
 	}
 }

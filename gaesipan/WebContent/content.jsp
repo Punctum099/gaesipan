@@ -15,7 +15,7 @@
 		String driver = "com.mysql.jdbc.Driver";
 		String url = "jdbc:mysql://localhost:3306/gaesipan?characterEncoding=UTF-8&serverTimezone=UTC";
 		String upw = "tjddlr320";
-		String query = "select * FROM bored";
+		String query = "select * FROM Board_TB";
 	%>
     
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -31,10 +31,10 @@
 		Class.forName(driver);	//com.mysql.jdbc.Driver
 		connection = DriverManager.getConnection(url, "root", upw);	//jdbc:mysql://localhost:3306/gaesipan?characterEncoding=UTF-8&serverTimezone=UTC
 		statement = connection.createStatement();
-		resultSet = statement.executeQuery(query);	//select * from bored
+		resultSet = statement.executeQuery(query);	//select * from Board_TB
 		
 		while(resultSet.next()){
-			int siq = resultSet.getInt("siq");
+			int seq = resultSet.getInt("seq");
 			String title = resultSet.getString("title");
 			String contents = resultSet.getString("contents");
 			String author = resultSet.getString("author");
@@ -54,7 +54,7 @@
 			<td>최근 수정 시간</td>
 		</tr>
 		<tr>
-			<td><%= siq %></td>
+			<td><%= seq %></td>
 			<td><%= title %></td>
 			<td><%= author %></td>
 			<td><%= hit %></td>

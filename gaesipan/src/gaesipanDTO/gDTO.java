@@ -2,7 +2,7 @@ package gaesipanDTO;
 
 public class gDTO {
 
-	private int siq;
+	private int seq;
 	private String title;
 	private String contents;
 	private String author;
@@ -11,9 +11,9 @@ public class gDTO {
 	private String UPtime;
 	private String see;
 	
-	public gDTO(int siq, String title, String contents, String author, int hit, String time, String UPtime,
+	public gDTO(int seq, String title, String contents, String author, int hit, String time, String UPtime,
 			String see) {
-		this.siq = siq;
+		this.seq = seq;
 		this.title = title;
 		this.contents = contents;
 		this.author = author;
@@ -23,12 +23,12 @@ public class gDTO {
 		this.see = see;
 	}
 
-	public int getSiq() {
-		return siq;
+	public int getseq() {
+		return seq;
 	}
 
-	public void setSiq(int siq) {
-		this.siq = siq;
+	public void setseq(int seq) {
+		this.seq = seq;
 	}
 
 	public String getTitle() {

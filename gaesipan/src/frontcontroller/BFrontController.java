@@ -13,6 +13,7 @@ import command.BCommand;
 import command.BContentCommand;
 import command.BDeleteCommand;
 import command.BListCommand;
+import command.BWriteCommand;
 
 /**
  * Servlet implementation class BFrontController
@@ -72,6 +73,14 @@ public class BFrontController extends HttpServlet {
 			command = new BDeleteCommand();
 			command.execute(request, response);
 			viewPage = "list.do";
+		}else if(com.equals("/delete.do")) {
+			command = new BDeleteCommand();
+			command.execute(request, response);
+			viewPage = "list.do";
+		}else if(com.equals("/write_view.do")) {
+			command = new BWriteCommand();
+			command.execute(request, response);
+			viewPage = "write_view.jsp";
 		}
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(viewPage);

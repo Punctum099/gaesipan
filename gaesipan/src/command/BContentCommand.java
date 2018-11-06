@@ -12,9 +12,9 @@ public class BContentCommand implements BCommand {
 	public void execute(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 
-		String siq = request.getParameter("siq");
+		String seq = request.getParameter("seq");
 		gDAO dao = new gDAO();
-		gDTO dto = dao.contentView(siq);
+		gDTO dto = dao.contentView(seq);
 		
 		request.setAttribute("content_view", dto);
 	}

@@ -12,7 +12,8 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<table border="1">
+	
+	<table cellpadding="0" cellspacing="0" border="1">
 		<tr>
 			<td>번호</td>
 			<td>제목</td>
@@ -23,14 +24,18 @@
 		</tr>
 		<c:forEach items="${list}" var="dto">
 		<tr>
-			<td>${dto.siq}</td>
-			<td><a href ="content_view.do?siq=${dto.siq}">${dto.title}</a></td>
+			<td>${dto.seq}</td>
+			<td><a href ="content_view.do?seq=${dto.seq}">${dto.title}</a></td>
 			<td>${dto.author}</td>
 			<td>${dto.hit}</td>
 			<td>${dto.time}</td>
 			<td>${dto.UPtime}</td>
 		</tr>
 		</c:forEach>
+		<tr>
+			<td colspan="6"> <a href="write_view.do">글작성</a> </td>
+		</tr>
 	</table>
+	
 </body>
 </html>
