@@ -78,9 +78,11 @@ public class BFrontController extends HttpServlet {
 			command.execute(request, response);
 			viewPage = "list.do";
 		}else if(com.equals("/write_view.do")) {
+			viewPage = "write_view.jsp";
+		}else if(com.equals("/write.do")) {
 			command = new BWriteCommand();
 			command.execute(request, response);
-			viewPage = "write_view.jsp";
+			viewPage = "list.do";
 		}
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(viewPage);

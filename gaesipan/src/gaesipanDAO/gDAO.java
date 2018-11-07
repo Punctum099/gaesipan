@@ -7,18 +7,14 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import javax.sql.DataSource;
-
 import gaesipanDTO.gDTO;
 
 public class gDAO {
 
-	DataSource dataSource;
-
 	private String driver = "com.mysql.jdbc.Driver";
 	private String url = "jdbc:mysql://localhost:3306/gaesipan?characterEncoding=UTF-8&serverTimezone=UTC";
 	private String upw = "tjddlr320";
-	private String query = "select * FROM Board_TB";
+	private String query = "SELECT * FROM Board_TB WHERE see = 'Y'";
 	
 	public gDAO() {
 		try{
@@ -38,7 +34,7 @@ public class gDAO {
 		
 		try{
 			connection = DriverManager.getConnection(url, "root", upw);	//jdbc:mysql://localhost:3306/gaesipan?characterEncoding=UTF-8&serverTimezone=UTC
-			statement = connection.createStatement();
+			statement = connection.createStatement();					//↑ 데이터베이스 타임 존 설정
 			resultSet = statement.executeQuery(query);	//select * from Board_TB
 			
 			while(resultSet.next()){
@@ -76,7 +72,7 @@ public ArrayList<gDTO> list() {
 		ResultSet resultSet = null;
 		
 		try {
-			String query = "select * from Board_TB";
+			String query = "SELECT * FROM Board_TB WHERE see = 'Y'";
 			connection = DriverManager.getConnection(url, "root", upw);
 			preparedStatement = connection.prepareStatement(query);
 			resultSet = preparedStatement.executeQuery();
@@ -125,7 +121,7 @@ public ArrayList<gDTO> list() {
 
 			connection = DriverManager.getConnection(url, "root", upw);
 			
-			String query = "select * from Board_TB where seq = ?";
+			String query = "SELECT * FROM Board_TB where seq = ? AND see = 'Y'";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, Integer.parseInt(seq));
 			resultSet = preparedStatement.executeQuery();
@@ -193,7 +189,7 @@ public ArrayList<gDTO> list() {
 		try {
 			
 			connection = DriverManager.getConnection(url, "root", upw);
-			String query = "DELETE FROM Board_TB WHERE seq = ?";
+			String query = "UPDATE Board_TB SET see = 'N' WHERE seq = ?";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, Integer.parseInt(seq));
 			preparedStatement.executeUpdate();
@@ -211,26 +207,19 @@ public ArrayList<gDTO> list() {
 		}
 	}
 	
-	public void write(String bName, String bTitle, String bContent) {
+	public void write(String title, String contents, String author) {
 		// TODO Auto-generated method stub
 		
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
 		
 		try {
-			
-			String title = resultSet.getString("title");
-			String contents = resultSet.getString("contents");
-			String author = resultSet.getString("author");
-			
-			connection = dataSource.getConnection();
-			String query = "INSERT INTO Board_TB (title, contents, author, hit, time, UPtime, see) \r\n" + 
-					"VALUES (?, ?, ?, 0, NOW(), NOW(), 'Y');";
+			connection = DriverManager.getConnection(url, "root", upw);
+			String query = "INSERT INTO Board_TB (title, contents, author, hit, time, UPtime, see) VALUES (?, ?, ?, 0, NOW(), NOW(), 'Y');";
 			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, title);
-			preparedStatement.setString(2, contents);
-			preparedStatement.setString(3, author);
+			preparedStatement.setString(1, contents);	//	이 부분은 
+			preparedStatement.setString(2, author);		//	뭔가가 이상하므로
+			preparedStatement.setString(3, title);		//	나중에 다시 한 번 살펴보자
 			preparedStatement.executeUpdate();
 		} catch (Exception e) {
 			// TODO: handle exception
