@@ -11,11 +11,11 @@ public class BWriteCommand implements BCommand {
 	public void execute(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		
-		String author = request.getParameter("author");
 		String title = request.getParameter("title");
 		String contents = request.getParameter("contents");
+		String author = request.getParameter("author");
 		
 		gDAO dao = new gDAO();
-		dao.write(author, title, contents);
+		dao.write(title, contents, author);
 	}
 }
