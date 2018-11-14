@@ -13,9 +13,15 @@ public class BListCommand implements BCommand {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
+
+		String pageNumber = request.getParameter("pageNumber");
 		
+		if(request.getParameter("pageNumber") == null) {
+			pageNumber = "1";
+		}
+
 		gDAO dao = new gDAO();
-		ArrayList<gDTO> dtos = dao.list();
+		ArrayList<gDTO> dtos = dao.list(pageNumber);
 		request.setAttribute("list", dtos);
 	}
 }
