@@ -65,7 +65,7 @@ public class gDAO {
 		return dtos;
 	}
 	
-public ArrayList<gDTO> list(String pageNumber) {
+public ArrayList<gDTO> list(String pageNumber, String option, String search) {
 		
 		ArrayList<gDTO> dtos = new ArrayList<gDTO>();
 		Connection connection = null;
@@ -73,8 +73,14 @@ public ArrayList<gDTO> list(String pageNumber) {
 		ResultSet resultSet = null;
 		
 		try {
-			String query = "SELECT * FROM Board_TB WHERE see = 'Y' ORDER BY seq LIMIT ?, ?";
 			connection = DriverManager.getConnection(url, "root", upw);
+			String query = "SELECT * FROM Board_TB WHERE see = 'Y' ORDER BY seq LIMIT ?, ?";
+			
+			if(option.equals("title") || option.equals("contents")){
+				query = "SELECT * FROM Board_TB WHERE see = 'Y' AND " + option + " LIKE '%" + search + "%' ORDER BY seq LIMIT ?, ?";
+			}else if(option.equals("title_content")){
+				query = "SELECT * FROM Board_TB WHERE see = 'Y' AND (title LIKE '%" + search + "%' AND contents LIKE '%" + search + "%') ORDER BY seq LIMIT ?, ?";
+			}
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, Integer.parseInt(pageNumber) * pageSize - pageSize);
 			preparedStatement.setInt(2, pageSize);
@@ -172,7 +178,7 @@ public ArrayList<gDTO> list(String pageNumber) {
 		return 0;
 	}
 	
-	public int totalCount() {
+	public int totalCount(String option, String search) {
 		
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
@@ -181,6 +187,14 @@ public ArrayList<gDTO> list(String pageNumber) {
 		try {
 			String query = "SELECT COUNT(*) FROM Board_TB WHERE see = 'Y';";
 			connection = DriverManager.getConnection(url, "root", upw);
+			
+			if(option.equals("title") || option.equals("contents")){
+				query = "SELECT COUNT(*) FROM Board_TB WHERE see = 'Y' AND title LIKE '%" + search + "%';";
+			}else if(option.equals("title_content")){
+				query = "SELECT COUNT(*) FROM Board_TB WHERE see = 'Y' AND (title LIKE '%" + search + "%' AND contents LIKE '%" + search + "%');";
+			}
+			
+			
 			preparedStatement = connection.prepareStatement(query);
 			resultSet = preparedStatement.executeQuery();
 			if(resultSet.next()) {
