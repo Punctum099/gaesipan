@@ -3,7 +3,7 @@ package command;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import gaesipanDAO.gDAO;
+import gaesipanDAO.bDAO;
 
 public class BModifyCommand implements BCommand {
 
@@ -15,7 +15,7 @@ public class BModifyCommand implements BCommand {
 		String contents = request.getParameter("contents");
 		String seq = request.getParameter("seq");
 		
-		gDAO  dao = new gDAO();
+		bDAO  dao = new bDAO();
 		dao.modify(title, contents, seq);
 			
 	}

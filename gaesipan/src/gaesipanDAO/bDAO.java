@@ -7,17 +7,17 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import gaesipanDTO.gDTO;
+import gaesipanDTO.bDTO;
 
-public class gDAO {
+public class bDAO {
 
 	private String driver = "com.mysql.jdbc.Driver";
-	private String url = "jdbc:mysql://localhost:3306/gaesipan?characterEncoding=UTF-8&serverTimezone=UTC";
+	private String url = "jdbc:mysql://localhost:3307/gaesipan?characterEncoding=UTF-8&serverTimezone=UTC";	//포트번호 주의
 	private String upw = "tjddlr320";
 	private String query = "SELECT * FROM Board_TB WHERE see = 'Y' ORDER BY seq";
 	private int pageSize = 20;
 	
-	public gDAO() {
+	public bDAO() {
 		try{
 			Class.forName(driver);	//com.mysql.jdbc.Driver
 		} catch(Exception e) {
@@ -25,16 +25,16 @@ public class gDAO {
 		}
 	}
 	
-	public ArrayList<gDTO> content(){
+	public ArrayList<bDTO> content(){
 		
-		ArrayList<gDTO> dtos = new ArrayList<gDTO>();
+		ArrayList<bDTO> dtos = new ArrayList<bDTO>();
 		
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
 		
 		try{
-			connection = DriverManager.getConnection(url, "root", upw);	//jdbc:mysql://localhost:3306/gaesipan?characterEncoding=UTF-8&serverTimezone=UTC
+			connection = DriverManager.getConnection(url, "root", upw);	//jdbc:mysql://localhost:3307/gaesipan?characterEncoding=UTF-8&serverTimezone=UTC
 			statement = connection.createStatement();					//↑ 데이터베이스 타임 존 설정
 			resultSet = statement.executeQuery(query);	//SELECT * FROM Board_TB WHERE see = 'Y' ORDER BY seq
 			
@@ -48,7 +48,7 @@ public class gDAO {
 				String UPtime = resultSet.getString("UPtime");
 				String see = resultSet.getString("see");
 				
-				gDTO dto = new gDTO(seq, title, contents, author, hit, time, UPtime, see);
+				bDTO dto = new bDTO(seq, title, contents, author, hit, time, UPtime, see);
 				dtos.add(dto);
 			}
 		} catch(Exception e) {
@@ -65,9 +65,9 @@ public class gDAO {
 		return dtos;
 	}
 	
-public ArrayList<gDTO> list(String pageNumber, String option, String search) {
+public ArrayList<bDTO> list(String pageNumber, String option, String search) {
 		
-		ArrayList<gDTO> dtos = new ArrayList<gDTO>();
+		ArrayList<bDTO> dtos = new ArrayList<bDTO>();
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -76,10 +76,10 @@ public ArrayList<gDTO> list(String pageNumber, String option, String search) {
 			connection = DriverManager.getConnection(url, "root", upw);
 			String query = "SELECT * FROM Board_TB WHERE see = 'Y' ORDER BY seq LIMIT ?, ?";
 			
-			if(option.equals("title") || option.equals("contents")){
+			if(option.equals("author") || option.equals("title") || option.equals("contents")){
 				query = "SELECT * FROM Board_TB WHERE see = 'Y' AND " + option + " LIKE '%" + search + "%' ORDER BY seq LIMIT ?, ?";
 			}else if(option.equals("title_content")){
-				query = "SELECT * FROM Board_TB WHERE see = 'Y' AND (title LIKE '%" + search + "%' AND contents LIKE '%" + search + "%') ORDER BY seq LIMIT ?, ?";
+				query = "SELECT * FROM Board_TB WHERE see = 'Y' AND (title LIKE '%" + search + "%' OR contents LIKE '%" + search + "%') ORDER BY seq LIMIT ?, ?";
 			}
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, Integer.parseInt(pageNumber) * pageSize - pageSize);
@@ -96,7 +96,7 @@ public ArrayList<gDTO> list(String pageNumber, String option, String search) {
 				String UPtime = resultSet.getString("UPtime");
 				String see = resultSet.getString("see");
 				
-				gDTO dto = new gDTO(seq, title, contents, author, hit, time, UPtime, see);
+				bDTO dto = new bDTO(seq, title, contents, author, hit, time, UPtime, see);
 				dtos.add(dto);
 			}
 			
@@ -188,10 +188,10 @@ public ArrayList<gDTO> list(String pageNumber, String option, String search) {
 			String query = "SELECT COUNT(*) FROM Board_TB WHERE see = 'Y';";
 			connection = DriverManager.getConnection(url, "root", upw);
 			
-			if(option.equals("title") || option.equals("contents")){
-				query = "SELECT COUNT(*) FROM Board_TB WHERE see = 'Y' AND title LIKE '%" + search + "%';";
+			if(option.equals("author") || option.equals("title") || option.equals("contents")){
+				query = "SELECT COUNT(*) FROM Board_TB WHERE see = 'Y'  AND " + option + " LIKE '%" + search + "%';";
 			}else if(option.equals("title_content")){
-				query = "SELECT COUNT(*) FROM Board_TB WHERE see = 'Y' AND (title LIKE '%" + search + "%' AND contents LIKE '%" + search + "%');";
+				query = "SELECT COUNT(*) FROM Board_TB WHERE see = 'Y' AND (title LIKE '%" + search + "%' OR contents LIKE '%" + search + "%');";
 			}
 			
 			
@@ -216,7 +216,7 @@ public ArrayList<gDTO> list(String pageNumber, String option, String search) {
 		return 0;
 	}
 
-	public gDTO contentView(String seq, String modify) {
+	public bDTO contentView(String seq, String modify) {
 		// TODO Auto-generated method stub
 		
 		if(modify==null) {
@@ -225,7 +225,7 @@ public ArrayList<gDTO> list(String pageNumber, String option, String search) {
 			modify=null;
 		}
 		
-		gDTO dto = null;
+		bDTO dto = null;
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -249,7 +249,7 @@ public ArrayList<gDTO> list(String pageNumber, String option, String search) {
 				String UPtime = resultSet.getString("UPtime");
 				String see = resultSet.getString("see");
 				
-				dto = new gDTO(Iseq, title, contents, author, hit, time, UPtime, see);
+				dto = new bDTO(Iseq, title, contents, author, hit, time, UPtime, see);
 			}
 			
 		} catch (Exception e) {

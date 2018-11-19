@@ -3,7 +3,7 @@ package command;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import gaesipanDAO.gDAO;
+import gaesipanDAO.bDAO;
 
 public class BDeleteCommand implements BCommand {
 
@@ -12,7 +12,7 @@ public class BDeleteCommand implements BCommand {
 		// TODO Auto-generated method stub
 		
 		String seq = request.getParameter("seq");
-		gDAO dao = new gDAO();
+		bDAO dao = new bDAO();
 		dao.delete(seq);
 	}
 }

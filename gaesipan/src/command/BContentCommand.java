@@ -3,8 +3,8 @@ package command;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import gaesipanDAO.gDAO;
-import gaesipanDTO.gDTO;
+import gaesipanDAO.bDAO;
+import gaesipanDTO.bDTO;
 
 public class BContentCommand implements BCommand {
 
@@ -14,8 +14,8 @@ public class BContentCommand implements BCommand {
 
 		String seq = request.getParameter("seq");
 		String modify = request.getParameter("modify");
-		gDAO dao = new gDAO();
-		gDTO dto = dao.contentView(seq, modify);
+		bDAO dao = new bDAO();
+		bDTO dto = dao.contentView(seq, modify);
 		
 		request.setAttribute("content_view", dto);
 	}

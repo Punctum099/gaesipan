@@ -1,6 +1,6 @@
 package gaesipanDTO;
 
-public class gDTO {
+public class bDTO {
 
 	private int seq;
 	private String title;
@@ -11,7 +11,7 @@ public class gDTO {
 	private String UPtime;
 	private String see;
 	
-	public gDTO(int seq, String title, String contents, String author, int hit, String time, String UPtime,
+	public bDTO(int seq, String title, String contents, String author, int hit, String time, String UPtime,
 			String see) {
 		this.seq = seq;
 		this.title = title;

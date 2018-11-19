@@ -1,12 +1,13 @@
 package command;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import gaesipanDAO.gDAO;
-import gaesipanDTO.gDTO;
+import gaesipanDAO.bDAO;
+import gaesipanDTO.bDTO;
 
 public class BListCommand implements BCommand {
 
@@ -17,7 +18,7 @@ public class BListCommand implements BCommand {
 		String pageNumber = request.getParameter("pageNumber");
 		String option = request.getParameter("option");
 		String search = request.getParameter("search");
-		
+			
 		if(request.getParameter("pageNumber") == null) {
 			pageNumber = "1";
 		}
@@ -28,8 +29,8 @@ public class BListCommand implements BCommand {
 			search = "";
 		}
 		
-		gDAO dao = new gDAO();
-		ArrayList<gDTO> dtos = dao.list(pageNumber, option, search);
+		bDAO dao = new bDAO();
+		ArrayList<bDTO> dtos = dao.list(pageNumber, option, search);
 		request.setAttribute("list", dtos);
 	}
 }

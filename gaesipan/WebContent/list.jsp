@@ -1,16 +1,18 @@
 <%@page import="javafx.beans.property.SetProperty"%>
-<%@page import="gaesipanDAO.gDAO"%>
-<%@page import="gaesipanDTO.gDTO"%>
+<%@page import="gaesipanDAO.bDAO"%>
+<%@page import="gaesipanDTO.bDTO"%>
 <%@page import="java.util.ArrayList"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%> 
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%> 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<% request.setCharacterEncoding("UTF-8"); %>
 <%
-	gDAO gDAO = new gDAO();
+	request.setCharacterEncoding("UTF-8");
+%>
+<%
+	bDAO bDAO = new bDAO();
 	String pageNumber = "1";
 	String option = "";
 	String search = "";
@@ -29,9 +31,8 @@
 		response.sendRedirect("list.do");
 	}
 	
-	int targetPage = gDAO.targetPage(pageNumber);
-	int totalCount = gDAO.totalCount(option, search);
-	System.out.println(totalCount);
+	int targetPage = bDAO.targetPage(pageNumber);
+	int totalCount = bDAO.totalCount(option, search);
 	int pageSize = 20;
 	int totalPage = totalCount / pageSize;
 	if (totalCount % pageSize > 0) {
@@ -47,19 +48,19 @@
 	}
 %>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
 	
 	<table cellpadding="0" cellspacing="0" border="1">
 		<tr>
-			<td>¹øÈ£</td>
-			<td>Á¦¸ñ</td>
-			<td>±Û¾´ÀÌ</td>
-			<td>Á¶È¸¼ö</td>
-			<td>°Ô½Ã ½Ã°£</td>
-			<td>ÃÖ±Ù ¼öÁ¤ ½Ã°£</td>
+			<td>ë²ˆí˜¸</td>
+			<td>ì œëª©</td>
+			<td>ê¸€ì“´ì´</td>
+			<td>ì¡°íšŒìˆ˜</td>
+			<td>ê²Œì‹œ ì‹œê°„</td>
+			<td>ìµœê·¼ ìˆ˜ì • ì‹œê°„</td>
 		</tr>
 		<c:choose>
 		    <c:when test="${list != NULL}">
@@ -76,24 +77,24 @@
 		    </c:when>
 		    <c:otherwise>
 		        <tr>
-		        	<td colspan=6>±ÛÀÌ ¾ø½À´Ï´Ù.</td>
+		        	<td colspan=6>ê¸€ì´ ì—†ìŠµë‹ˆë‹¤.</td>
 		        </tr>
 		    </c:otherwise>
 		</c:choose>
 
 		<tr>
-			<td colspan="6"> <a href="write_view.do">±ÛÀÛ¼º</a> </td>
+			<td colspan="6"> <a href="write_view.do">ê¸€ìž‘ì„±</a> </td>
 		</tr>
 	</table>
 	
 		<%
 			if(startPage != 1){
 		%>
-			<a href="list.do?pageNumber=<%= startPage - 1%>&option=<%=option%>&search=<%=search%>">¢¸</a>
+			<a href="list.do?pageNumber=<%= startPage - 1%>&option=<%=option%>&search=<%=search%>">â—€</a>
 		<%
 			}else{
 		%>
-			¢·
+			â—
 		<%
 			}
 			for(int i = startPage; i <= endPage; i++){
@@ -103,41 +104,28 @@
 			}
 		if(targetPage + Integer.parseInt(pageNumber) > startPage + 9){
 		%>
-			<a href="list.do?pageNumber=<%= startPage + 10%>&option=<%=option%>&search=<%=search%>">¢º</a>
+			<a href="list.do?pageNumber=<%= startPage + 10%>&option=<%=option%>&search=<%=search%>">â–¶</a>
 		<%
 			}else{
 		%>
-			¢¹
+			â–·
 		<%
 			}
 		%>
 		
 		<form method="GET" action="list.do">
       		<SELECT name="option">
-		        <OPTION value='author'>ÀÌ¸§</OPTION>
-		        <OPTION value='title'>Á¦¸ñ</OPTION>
-		        <OPTION value='contents'>³»¿ë</OPTION>
-		        <OPTION value='title_content'>Á¦¸ñ+³»¿ë</OPTION>
+		        <OPTION value='title' <%if(option.equals("title") || option.equals("") || option == null){%>selected="selected"<%}%>>ì œëª©</OPTION>
+		        <OPTION value='contents' <%if(option.equals("contents")){%>selected="selected"<%}%>>ë‚´ìš©</OPTION>
+		        <OPTION value='author' <%if(option.equals("author")){%>selected="selected"<%}%>>ì´ë¦„</OPTION>
+		        <OPTION value='title_content' <%if(option.equals("title_content")){%>selected="selected"<%}%>>ì œëª©+ë‚´ìš©</OPTION>
 		    </SELECT>
-		    <input type="text" name="search" value="" placeholder="Æ¯¼ö¹®ÀÚ´Â »ç¿ëÇÒ¼ö ¾ø½À´Ï´Ù.">
-		    <button type='submit'>°Ë»ö</button>    
+			<input type="text" name="search" value="<%=search %>" placeholder="íŠ¹ìˆ˜ë¬¸ìžëŠ” ì‚¬ìš©í• ìˆ˜ ì—†ìŠµë‹ˆë‹¤.">
+		    <button type='submit'>ê²€ìƒ‰</button>    
 		</form>
 	
-	<table  cellpadding="3" border="0">
-		<form action="logined.jsp" method="post">
-			<tr>
-				<td>¾ÆÀÌµð <input type="text" name="ID" size = "15"></td>
-				<td rowspan="2"><input type="submit" value="·Î±×ÀÎ"></td>
-			</tr>
-			<tr>
-				<td>ºñ¹Ð¹øÈ£ <input type="text" name="password" size = "15"></td>
-			</tr>
-		</form>
-		<tr>
-			<td><a href="#">È¸¿ø°¡ÀÔ</a></td>
-			<td><a href="#">¾ÆÀÌµð¡¤ºñ¹Ð¹øÈ£ Ã£±â</a></td>
-		</tr>
-	</table>
+	<a href="login.jsp">ë¡œê·¸ì¸</a>
+	<a href="list.do">ì²˜ìŒìœ¼ë¡œ</a>
 	
 </body>
 </html>

@@ -15,6 +15,7 @@ import command.BDeleteCommand;
 import command.BListCommand;
 import command.BModifyCommand;
 import command.BWriteCommand;
+import command.USign_inCommand;
 
 /**
  * Servlet implementation class BFrontController
@@ -53,7 +54,7 @@ public class BFrontController extends HttpServlet {
 		// TODO Auto-generated method stub
 		System.out.println("actionDo");
 		
-		request.setCharacterEncoding("EUC-KR");
+		request.setCharacterEncoding("UTF-8");
 		
 		String viewPage = null;
 		BCommand command = null;
@@ -90,6 +91,10 @@ public class BFrontController extends HttpServlet {
 			viewPage = "modify_view.jsp";
 		}else if(com.equals("/modify.do")) {
 			command = new BModifyCommand();
+			command.execute(request, response);
+			viewPage = "list.do";
+		}else if(com.equals("/sign_in.do")) {
+			command = new USign_inCommand();
 			command.execute(request, response);
 			viewPage = "list.do";
 		}
