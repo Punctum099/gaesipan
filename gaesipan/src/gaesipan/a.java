@@ -13,7 +13,7 @@ public class a {
 		    Statement st = null;
 		    try {
 		        Class.forName("com.mysql.jdbc.Driver");
-		        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/gaesipan?characterEncoding=UTF-8&serverTimezone=UTC" , "root", "tjddlr320");
+		        connection = DriverManager.getConnection("jdbc:mysql://localhost:3307/gaesipan?characterEncoding=UTF-8&serverTimezone=UTC" , "root", "tjddlr320");
 		        st = connection.createStatement();
 		        connection.close();
 		    } catch (SQLException se1) {

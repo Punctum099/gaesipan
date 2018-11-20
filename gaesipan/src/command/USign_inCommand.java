@@ -21,6 +21,6 @@ public class USign_inCommand implements BCommand {
 		String author = request.getParameter("author");
 		
 		uDAO dao = new uDAO();
-		dao.write(title, contents, author);
+//		dao.write(title, contents, author);
 	}
 }

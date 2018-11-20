@@ -15,7 +15,6 @@ public class uDAO {
 	private String url = "jdbc:mysql://localhost:3307/gaesipan?characterEncoding=UTF-8&serverTimezone=UTC";	//포트번호 주의
 	private String upw = "tjddlr320";
 	private String query = "SELECT * FROM Member_TB";
-	private int pageSize = 20;
 	
 	public uDAO() {
 		try{

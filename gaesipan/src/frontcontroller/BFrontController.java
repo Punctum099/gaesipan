@@ -10,10 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import command.BCommand;
-import command.BContentCommand;
+import command.BModify_viewCommend;
 import command.BDeleteCommand;
 import command.BListCommand;
 import command.BModifyCommand;
+import command.BNoticeListCommand;
 import command.BWriteCommand;
 import command.USign_inCommand;
 
@@ -63,33 +64,29 @@ public class BFrontController extends HttpServlet {
 		String conPath = request.getContextPath();
 		String com = uri.substring(conPath.length());
 		
-		if(com.equals("/list.do")) {
+		if(com.equals("/list.do")) {		//리스트를 보여준다 (글 목록)
 			command = new BListCommand();
 			command.execute(request, response);
 			viewPage = "list.jsp";
-		}else if(com.equals("/content_view.do")){
-			command = new BContentCommand();
+		}else if(com.equals("/content_view.do")){	//내용을 보여준다 (글 내용)
+			command = new BModify_viewCommend();
 			command.execute(request, response);
 			viewPage = "content_view.jsp";
-		}else if(com.equals("/delete.do")) {
+		}else if(com.equals("/delete.do")) {		//글삭제를 한 뒤 글목록으로 돌아간다 (글 삭제)
 			command = new BDeleteCommand();
 			command.execute(request, response);
 			viewPage = "list.do";
-		}else if(com.equals("/delete.do")) {
-			command = new BDeleteCommand();
-			command.execute(request, response);
-			viewPage = "list.do";
-		}else if(com.equals("/write_view.do")) {
+		}else if(com.equals("/write_view.do")) {	//글쓰기 화면으로 들어간다 (글 작성)
 			viewPage = "write_view.jsp";
-		}else if(com.equals("/write.do")) {
+		}else if(com.equals("/write.do")) {			//작성된 글을 DB에 입력하고 글목록으로 돌아간다 (글 입력)
 			command = new BWriteCommand();
 			command.execute(request, response);
 			viewPage = "list.do";
-		}else if(com.equals("/modify_view.do")) {
-			command = new BContentCommand();
+		}else if(com.equals("/modify_view.do")) {	//글수정 화면으로 들어간다 (글 수정)
+			command = new BModify_viewCommend();
 			command.execute(request, response);
 			viewPage = "modify_view.jsp";
-		}else if(com.equals("/modify.do")) {
+		}else if(com.equals("/modify.do")) {		//수정된 글을 DB에 업데이트하고 글목록으로 돌아간다 (글 수정)
 			command = new BModifyCommand();
 			command.execute(request, response);
 			viewPage = "list.do";
@@ -97,6 +94,10 @@ public class BFrontController extends HttpServlet {
 			command = new USign_inCommand();
 			command.execute(request, response);
 			viewPage = "list.do";
+		}else if(com.equals("/NoticeList.do")) {
+			command = new BNoticeListCommand();
+			command.execute(request, response);
+			viewPage = "NoticeList.jsp";
 		}
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(viewPage);

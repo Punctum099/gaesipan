@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import gaesipanDAO.bDAO;
 import gaesipanDTO.bDTO;
 
-public class BContentCommand implements BCommand {
+public class BModify_viewCommend implements BCommand {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) {

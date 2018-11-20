@@ -4,8 +4,8 @@
 <%@page import="java.sql.SQLException"%>
 <%@page import="java.sql.Statement"%>
 
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
     
     <%!
 		Connection connection;
@@ -21,7 +21,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
@@ -46,12 +46,12 @@
 	
 	<table border="1">
 		<tr>
-			<td>��ȣ</td>
-			<td>����</td>
-			<td>�۾���</td>
-			<td>��ȸ��</td>
-			<td>�Խ� �ð�</td>
-			<td>�ֱ� ���� �ð�</td>
+			<td>번호</td>
+			<td>제목</td>
+			<td>글쓴이</td>
+			<td>조회수</td>
+			<td>게시 시간</td>
+			<td>최근 수정 시간</td>
 		</tr>
 		<tr>
 			<td><%= seq %></td>

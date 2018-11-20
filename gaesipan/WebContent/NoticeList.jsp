@@ -65,39 +65,26 @@
 		<c:choose>
 		    <c:when test="${list != NULL and list != '' and not empty list}">
 				<c:forEach items="${list}" var="dto">
-					<c:choose>
-						<c:when test="${dto.listType == 'Notice'}">
-							<tr>
-								<td><b>${dto.seq}</b></td>
-								<td><b><a href ="content_view.do?seq=${dto.seq}">${dto.title}</a></b></td>
-								<td><b>${dto.author}</b></td>
-								<td><b>${dto.hit}</b></td>
-								<td><b>${dto.time}</b></td>
-								<td><b>${dto.UPtime}</b></td>
-							</tr>
-						</c:when>
-						<c:otherwise>
-					        <tr>
-								<td>${dto.seq}</td>
-								<td><a href ="content_view.do?seq=${dto.seq}">${dto.title}</a></td>
-								<td>${dto.author}</td>
-								<td>${dto.hit}</td>
-								<td>${dto.time}</td>
-								<td>${dto.UPtime}</td>
-							</tr>
-					    </c:otherwise>
-					</c:choose>
+				<c:if test="${dto.listType == 'Notice'}">
+					<tr>
+						<td>${dto.seq}</td>
+						<td><a href ="content_view.do?seq=${dto.seq}">${dto.title}</a></td>
+						<td>${dto.author}</td>
+						<td>${dto.hit}</td>
+						<td>${dto.time}</td>
+						<td>${dto.UPtime}</td>
+					</tr>
+				</c:if>
 				</c:forEach>
 		    </c:when>
 		    <c:otherwise>
 		        <tr>
-		        	<td colspan=6>글이 없습니다.</td>
+		        	<td colspan=6>공지사항이 없습니다.</td>
 		        </tr>
 		    </c:otherwise>
 		</c:choose>
-
 		<tr>
-			<td colspan="6"> <a href="write_view.do">글작성</a> </td>
+			<td colspan="6"> <a href="write_view.do">공지사항 작성</a> </td>
 		</tr>
 	</table>
 	
@@ -140,8 +127,7 @@
 		    <button type='submit'>검색</button>    
 		</form>
 	
-	<a href="NoticeList.do">공지사항 관리</a>
-	<a href="login.jsp">로그인</a>
+	<a href="Notice.jsp">공지사항 관리</a>
 	<a href="list.do">처음으로</a>
 	
 </body>

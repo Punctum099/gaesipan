@@ -1,28 +1,31 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
 	<table width="500" cellpadding="0" cellspacing="0" border="1">
 		<form action="write.do" method="post">
 			<tr>
-				<td> ÀÌ¸§ </td>
+				<td> ì´ë¦„ </td>
 				<td> <input type="text" name="author" size = "50"> </td>
 			</tr>
 			<tr>
-				<td> Á¦¸ñ </td>
+				<td> ì œëª© </td>
 				<td> <input type="text" name="title" size = "50"> </td>
 			</tr>
 			<tr>
-				<td> ³»¿ë </td>
+				<td> ë‚´ìš© </td>
 				<td> <textarea name="contents" rows="10" ></textarea> </td>
 			</tr>
 			<tr >
-				<td colspan="2"> <input type="submit" value="ÀÔ·Â"> &nbsp;&nbsp; <a href="list.do">¸ñ·Ïº¸±â</a></td>
+				<td colspan="2"> <input type="submit" value="ì…ë ¥"> &nbsp;&nbsp; 
+				<a href="list.do">ëª©ë¡ë³´ê¸°</a> &nbsp;&nbsp; 
+				<input type="checkbox" name="listType" value="Notice"> ê³µì§€ì‚¬í•­
+				<input type="hidden" name="listType" value="Normal"></td>
 			</tr>
 		</form>
 	</table>
