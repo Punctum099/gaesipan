@@ -53,40 +53,49 @@
 </head>
 <body>
 	
-	<table cellpadding="0" cellspacing="0" border="1">
-		<tr>
-			<td>번호</td>
-			<td>제목</td>
-			<td>글쓴이</td>
-			<td>조회수</td>
-			<td>게시 시간</td>
-			<td>최근 수정 시간</td>
-		</tr>
-		<c:choose>
-		    <c:when test="${list != NULL and list != '' and not empty list}">
-				<c:forEach items="${list}" var="dto">
-				<c:if test="${dto.listType == 'Notice'}">
-					<tr>
-						<td>${dto.seq}</td>
-						<td><a href ="content_view.do?seq=${dto.seq}">${dto.title}</a></td>
-						<td>${dto.author}</td>
-						<td>${dto.hit}</td>
-						<td>${dto.time}</td>
-						<td>${dto.UPtime}</td>
-					</tr>
-				</c:if>
-				</c:forEach>
-		    </c:when>
-		    <c:otherwise>
-		        <tr>
-		        	<td colspan=6>공지사항이 없습니다.</td>
-		        </tr>
-		    </c:otherwise>
-		</c:choose>
-		<tr>
-			<td colspan="6"> <a href="write_view.do">공지사항 작성</a> </td>
-		</tr>
-	</table>
+		<table cellpadding="0" cellspacing="0" border="1">
+			<tr>
+				<td>번호</td>
+				<td>제목</td>
+				<td>글쓴이</td>
+				<td>조회수</td>
+				<td>게시 시간</td>
+				<td>최근 수정 시간</td>
+				<td>게시 유지일</td>
+				<td>표시 여부</td>
+			</tr>
+			<c:choose>
+			    <c:when test="${list != NULL and list != '' and not empty list}">
+					<c:forEach items="${list}" var="dto">
+						<c:if test="${dto.listType == 'Notice'}">
+							<form action="apply.do" method="POST">
+								<tr>
+									<td>${dto.seq}</td>
+									<td><a href ="content_view.do?seq=${dto.seq}">${dto.title}</a></td>
+									<td>${dto.author}</td>
+									<td>${dto.hit}</td>
+									<td>${dto.time}</td>
+									<td>${dto.UPtime}</td>
+									<td>${dto.MTtime}</td>
+									<td><input type="checkbox" name="see" value="Y" <c:if test="${dto.see == 'Y'}">checked</c:if>>
+									<input type="submit" value="표시 여부 적용">
+									<input type="hidden" name="see" value="N">
+									<input type="hidden" value="${dto.seq}" name="seq"></td>
+								</tr>
+							</form>
+						</c:if>
+					</c:forEach>
+			    </c:when>
+			    <c:otherwise>
+			        <tr>
+			        	<td colspan=8>공지사항이 없습니다.</td>
+			        </tr>
+			    </c:otherwise>
+			</c:choose>
+			<tr>
+				<td colspan="8"> <a href="Notice_write_view.do">공지사항 작성</a> </td>
+			</tr>
+		</table>
 	
 		<%
 			if(startPage != 1){
@@ -126,8 +135,6 @@
 			<input type="text" name="search" value="<%=search %>" placeholder="특수문자는 사용할수 없습니다.">
 		    <button type='submit'>검색</button>    
 		</form>
-	
-	<a href="Notice.jsp">공지사항 관리</a>
 	<a href="list.do">처음으로</a>
 	
 </body>

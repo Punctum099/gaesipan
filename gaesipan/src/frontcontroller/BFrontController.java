@@ -10,10 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import command.BCommand;
-import command.BModify_viewCommend;
 import command.BDeleteCommand;
 import command.BListCommand;
 import command.BModifyCommand;
+import command.BContentViewCommend;
+import command.BNoticeApplyCommand;
 import command.BNoticeListCommand;
 import command.BWriteCommand;
 import command.USign_inCommand;
@@ -69,7 +70,7 @@ public class BFrontController extends HttpServlet {
 			command.execute(request, response);
 			viewPage = "list.jsp";
 		}else if(com.equals("/content_view.do")){	//내용을 보여준다 (글 내용)
-			command = new BModify_viewCommend();
+			command = new BContentViewCommend();
 			command.execute(request, response);
 			viewPage = "content_view.jsp";
 		}else if(com.equals("/delete.do")) {		//글삭제를 한 뒤 글목록으로 돌아간다 (글 삭제)
@@ -82,8 +83,14 @@ public class BFrontController extends HttpServlet {
 			command = new BWriteCommand();
 			command.execute(request, response);
 			viewPage = "list.do";
+		}else if(com.equals("/Notice_write_view.do")) {	//공지글쓰기 화면으로 들어간다 (공지글 작성)
+			viewPage = "Notice_write_view.jsp";
+		}else if(com.equals("/Notice_write.do")) {			//작성된 공지글을 DB에 입력하고 공지글목록으로 돌아간다 (공지글 입력)
+			command = new BWriteCommand();
+			command.execute(request, response);
+			viewPage = "NoticeList.do";
 		}else if(com.equals("/modify_view.do")) {	//글수정 화면으로 들어간다 (글 수정)
-			command = new BModify_viewCommend();
+			command = new BContentViewCommend();
 			command.execute(request, response);
 			viewPage = "modify_view.jsp";
 		}else if(com.equals("/modify.do")) {		//수정된 글을 DB에 업데이트하고 글목록으로 돌아간다 (글 수정)
@@ -98,6 +105,10 @@ public class BFrontController extends HttpServlet {
 			command = new BNoticeListCommand();
 			command.execute(request, response);
 			viewPage = "NoticeList.jsp";
+		}else if(com.equals("/apply.do")) {
+			command = new BNoticeApplyCommand();
+			command.execute(request, response);
+			viewPage = "NoticeList.do";
 		}
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(viewPage);

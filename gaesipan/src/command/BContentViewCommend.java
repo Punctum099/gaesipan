@@ -4,16 +4,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import gaesipanDAO.bDAO;
+import gaesipanDTO.bDTO;
 
-public class BDeleteCommand implements BCommand {
+public class BContentViewCommend implements BCommand {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 
-		String listType = request.getParameter("listType");
 		String seq = request.getParameter("seq");
+		String modify = request.getParameter("modify");
 		bDAO dao = new bDAO();
-		dao.delete(listType, seq);
+		bDTO dto = dao.contentView(seq, modify);
+		
+		request.setAttribute("content_view", dto);
 	}
 }

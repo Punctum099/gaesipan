@@ -48,8 +48,9 @@ public class bDAO {
 				String UPtime = resultSet.getString("UPtime");
 				String see = resultSet.getString("see");
 				String listType = resultSet.getString("listType");
+				String MTtime = resultSet.getString("MTtime");
 				
-				bDTO dto = new bDTO(seq, title, contents, author, hit, time, UPtime, see, listType);
+				bDTO dto = new bDTO(seq, title, contents, author, hit, time, UPtime, see, listType, MTtime);
 				dtos.add(dto);
 			}
 		} catch(Exception e) {
@@ -76,14 +77,14 @@ public ArrayList<bDTO> list(String pageNumber, String option, String search) {
 		try {
 			connection = DriverManager.getConnection(url, "root", upw);
 			
-			String query = "SELECT * FROM Board_TB WHERE see = 'Y' AND listType = 'Notice' \n" + 
-							"UNION ALL\n" + 
+			String query = "SELECT * FROM Board_TB WHERE see = 'Y' AND listType = 'Notice' AND MTtime > NOW() \n" + 
+							"UNION ALL \n" + 
 							"SELECT * FROM Board_TB WHERE see = 'Y' AND listType = 'Normal' ORDER BY listType DESC, seq DESC LIMIT ?, ?;";
 			
 			if(option.equals("author") || option.equals("title") || option.equals("contents")){
-				query = "SELECT * FROM Board_TB WHERE see = 'Y' AND " + option + " LIKE '%" + search + "%' ORDER BY seq DESC LIMIT ?, ?";
+				query = "SELECT * FROM Board_TB WHERE see = 'Y' AND MTtime > NOW() AND " + option + " LIKE '%" + search + "%' ORDER BY seq DESC LIMIT ?, ?";
 			}else if(option.equals("title_content")){
-				query = "SELECT * FROM Board_TB WHERE see = 'Y' AND (title LIKE '%" + search + "%' OR contents LIKE '%" + search + "%') ORDER BY seq DESC LIMIT ?, ?";
+				query = "SELECT * FROM Board_TB WHERE see = 'Y' AND MTtime > NOW() AND (title LIKE '%" + search + "%' OR contents LIKE '%" + search + "%') ORDER BY seq DESC LIMIT ?, ?";
 			}
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, Integer.parseInt(pageNumber) * pageSize - pageSize);
@@ -100,8 +101,9 @@ public ArrayList<bDTO> list(String pageNumber, String option, String search) {
 				String UPtime = resultSet.getString("UPtime");
 				String see = resultSet.getString("see");
 				String listType = resultSet.getString("listType");
+				String MTtime = resultSet.getString("MTtime");
 				
-				bDTO dto = new bDTO(seq, title, contents, author, hit, time, UPtime, see, listType);
+				bDTO dto = new bDTO(seq, title, contents, author, hit, time, UPtime, see, listType, MTtime);
 				dtos.add(dto);
 			}
 			
@@ -131,12 +133,12 @@ public ArrayList<bDTO> NoticeList(String pageNumber, String option, String searc
 	try {
 		connection = DriverManager.getConnection(url, "root", upw);
 		
-		String query = "SELECT * FROM Board_TB WHERE see = 'Y' AND listType = 'Notice' ORDER BY seq DESC LIMIT ?, ?;";
+		String query = "SELECT * FROM Board_TB WHERE (see = 'Y' OR see = 'N') AND listType = 'Notice' ORDER BY seq DESC LIMIT ?, ?;";
 		
 		if(option.equals("author") || option.equals("title") || option.equals("contents")){
-			query = "SELECT * FROM Board_TB WHERE see = 'Y' AND " + option + " LIKE '%" + search + "%' ORDER BY seq DESC LIMIT ?, ?";
+			query = "SELECT * FROM Board_TB WHERE (see = 'Y' OR see = 'N') AND " + option + " LIKE '%" + search + "%' ORDER BY seq DESC LIMIT ?, ?";
 		}else if(option.equals("title_content")){
-			query = "SELECT * FROM Board_TB WHERE see = 'Y' AND (title LIKE '%" + search + "%' OR contents LIKE '%" + search + "%') ORDER BY seq DESC LIMIT ?, ?";
+			query = "SELECT * FROM Board_TB WHERE (see = 'Y' OR see = 'N') AND (title LIKE '%" + search + "%' OR contents LIKE '%" + search + "%') ORDER BY seq DESC LIMIT ?, ?";
 		}
 		preparedStatement = connection.prepareStatement(query);
 		preparedStatement.setInt(1, Integer.parseInt(pageNumber) * pageSize - pageSize);
@@ -153,8 +155,9 @@ public ArrayList<bDTO> NoticeList(String pageNumber, String option, String searc
 			String UPtime = resultSet.getString("UPtime");
 			String see = resultSet.getString("see");
 			String listType = resultSet.getString("listType");
+			String MTtime = resultSet.getString("MTtime");
 			
-			bDTO dto = new bDTO(seq, title, contents, author, hit, time, UPtime, see, listType);
+			bDTO dto = new bDTO(seq, title, contents, author, hit, time, UPtime, see, listType, MTtime);
 			dtos.add(dto);
 		}
 		
@@ -314,8 +317,9 @@ public ArrayList<bDTO> NoticeList(String pageNumber, String option, String searc
 				String UPtime = resultSet.getString("UPtime");
 				String see = resultSet.getString("see");
 				String listType = resultSet.getString("listType");
+				String MTtime = resultSet.getString("MTtime");
 				
-				dto = new bDTO(Iseq, title, contents, author, hit, time, UPtime, see, listType);
+				dto = new bDTO(Iseq, title, contents, author, hit, time, UPtime, see, listType, MTtime);
 			}
 			
 		} catch (Exception e) {
@@ -361,14 +365,17 @@ public ArrayList<bDTO> NoticeList(String pageNumber, String option, String searc
 		}
 	}
 	
-	public void delete(String seq) {
+	public void delete(String listType, String seq) {
 		// TODO Auto-generated method stub
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		try {
-			
 			connection = DriverManager.getConnection(url, "root", upw);
-			String query = "UPDATE Board_TB SET see = 'N' WHERE seq = ?";
+			
+			String query = "UPDATE Board_TB SET see = 'D' WHERE seq = ?";
+			if(listType.equals("Normal")){
+				query = "UPDATE Board_TB SET see = 'N' WHERE seq = ?";
+			}
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, Integer.parseInt(seq));
 			preparedStatement.executeUpdate();
@@ -386,7 +393,7 @@ public ArrayList<bDTO> NoticeList(String pageNumber, String option, String searc
 		}
 	}
 	
-	public void write(String title, String contents, String author, String listType) {
+	public void write(String title, String contents, String author, String listType, String MTtime) {
 		// TODO Auto-generated method stub
 		
 		Connection connection = null;
@@ -395,11 +402,22 @@ public ArrayList<bDTO> NoticeList(String pageNumber, String option, String searc
 		try {
 			connection = DriverManager.getConnection(url, "root", upw);
 			String query = "INSERT INTO Board_TB (title, contents, author, hit, time, UPtime, see, listType) VALUES (?, ?, ?, 0, NOW(), NOW(), 'Y', ?);";
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, title);
-			preparedStatement.setString(2, contents);
-			preparedStatement.setString(3, author);
-			preparedStatement.setString(4, listType);
+			if(MTtime == null) {
+				query = "INSERT INTO Board_TB (title, contents, author, hit, time, UPtime, see, listType) VALUES (?, ?, ?, 0, NOW(), NOW(), 'Y', ?);";
+				preparedStatement = connection.prepareStatement(query);
+				preparedStatement.setString(1, title);
+				preparedStatement.setString(2, contents);
+				preparedStatement.setString(3, author);
+				preparedStatement.setString(4, listType);
+			}else if(MTtime != null){
+				query = "INSERT INTO Board_TB (title, contents, author, hit, time, UPtime, see, listType, MTtime) VALUES (?, ?, ?, 0, NOW(), NOW(), 'Y', ?, ?);";
+				preparedStatement = connection.prepareStatement(query);
+				preparedStatement.setString(1, title);
+				preparedStatement.setString(2, contents);
+				preparedStatement.setString(3, author);
+				preparedStatement.setString(4, listType);
+				preparedStatement.setString(5, MTtime);
+			}
 			preparedStatement.executeUpdate();
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -430,6 +448,35 @@ public ArrayList<bDTO> NoticeList(String pageNumber, String option, String searc
 			preparedStatement.setString(1, title);
 			preparedStatement.setString(2, contents);
 			preparedStatement.setInt(3, Integer.parseInt(seq));
+			preparedStatement.executeUpdate();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		} finally {
+			try {
+				if(preparedStatement != null) preparedStatement.close();
+				if(connection != null) connection.close();
+			} catch (Exception e2) {
+				// TODO: handle exception
+				e2.printStackTrace();
+			}
+		}
+	}
+	
+	public void NoticSee(String see, String seq ) {
+		// TODO Auto-generated method stub
+		
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		
+		try {
+			connection = DriverManager.getConnection(url, "root", upw);
+			
+			String query = "UPDATE Board_TB SET see = ? WHERE seq = ?;";
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, see);
+			preparedStatement.setString(2, seq);
 			preparedStatement.executeUpdate();
 			
 		} catch (Exception e) {

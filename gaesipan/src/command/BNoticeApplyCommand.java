@@ -4,19 +4,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import gaesipanDAO.bDAO;
-import gaesipanDTO.bDTO;
 
-public class BModify_viewCommend implements BCommand {
+public class BNoticeApplyCommand implements BCommand {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 
+		String see = request.getParameter("see");
 		String seq = request.getParameter("seq");
-		String modify = request.getParameter("modify");
-		bDAO dao = new bDAO();
-		bDTO dto = dao.contentView(seq, modify);
 		
-		request.setAttribute("content_view", dto);
+		bDAO dao = new bDAO();
+		dao.NoticSee(see, seq);
+			
 	}
 }

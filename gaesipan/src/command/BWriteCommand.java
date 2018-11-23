@@ -18,8 +18,9 @@ public class BWriteCommand implements BCommand {
 		String contents = request.getParameter("contents");
 		String author = request.getParameter("author");
 		String listType = request.getParameter("listType");
+		String MTtime = request.getParameter("MTtime");
 		
 		bDAO dao = new bDAO();
-		dao.write(title, contents, author, listType);
+		dao.write(title, contents, author, listType, MTtime);
 	}
 }

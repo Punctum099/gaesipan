@@ -11,9 +11,10 @@ public class bDTO {
 	private String UPtime;
 	private String see;
 	private String listType;
+	private String MTtime;
 	
 	public bDTO(int seq, String title, String contents, String author, int hit, String time, String UPtime,
-			String see, String listType) {
+			String see, String listType, String MTtime) {
 		this.seq = seq;
 		this.title = title;
 		this.contents = contents;
@@ -23,6 +24,7 @@ public class bDTO {
 		this.UPtime = UPtime;
 		this.see = see;
 		this.listType = listType;
+		this.MTtime = MTtime;
 	}
 
 	public int getseq() {
@@ -103,5 +105,13 @@ public class bDTO {
 
 	public void setSee(String see) {
 		this.see = see;
+	}
+	
+	public String getMTtime() {
+		return MTtime;
+	}
+
+	public void setMTtime(String mTtime) {
+		MTtime = mTtime;
 	}
 }
