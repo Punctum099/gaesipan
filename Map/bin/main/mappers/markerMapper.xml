@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+ 
+<mapper namespace="com.map.mapper.MarkerMapper">
+
+    <select id="markerList" resultType="com.map.VO.MarkerVO">
+        SELECT 
+        	* 
+        FROM 
+        	map_marker 
+        WHERE 
+        	use_yn='Y';
+    </select>
+
+</mapper>
