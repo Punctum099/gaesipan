@@ -6,6 +6,10 @@ public class MarkerVO {
 	private double x_coordinate;
 	private double y_coordinate;
 	private String category;
+	private String title;
+	private String contents;
+	private String tel;
+	private char use_yn;
 	
 	public int getSeq() {
 		return seq;
@@ -31,5 +35,31 @@ public class MarkerVO {
 	public void setCategory(String category) {
 		this.category = category;
 	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public String getContents() {
+		return contents;
+	}
+	public void setContents(String contents) {
+		this.contents = contents;
+	}
+	public String getTel() {
+		return tel;
+	}
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+	public char getUse_yn() {
+		return use_yn;
+	}
+	public void setUse_yn(char use_yn) {
+		this.use_yn = use_yn;
+	}
+	
+	
 
 }
