@@ -18,4 +18,4 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         INSERT INTO map_marker (x_coordinate, y_coordinate, category, use_yn) 
         VALUES (#{x_coordinate}, #{y_coordinate}, '기타', 'Y');
     </insert> -->
-</mapper>
+</mapper>      

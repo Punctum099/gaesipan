@@ -51,33 +51,70 @@
 		
 		var markers = [];
 		
-		// 마커를 표시할 위치 객체 배열입니다 
 		var positions = [
 			<c:forEach items="${markerList}" var="marker" varStatus="index">
 				{
-			        latlng: new daum.maps.LatLng("${marker.x_coordinate}", "${marker.y_coordinate}"),
-					category: "${marker.category}",
-					content: '<div class="wrap">' + 
-			        '    <div class="info">' + 
-			        '        <div class="title">' + 
-			        '            ${marker.title}' + 
-			        '            <div class="close" onclick="closeOverlay();" title="닫기"></div>' + 
-			        '        </div>' + 
-			        '        <div class="body">' + 
-			        '            <div class="img">' +
-			        '                <img src="http://cfile181.uf.daum.net/image/250649365602043421936D" width="73" height="70">' +
-			        '           </div>' + 
-			        '            <div class="desc">' + 
-			        '                <div class="ellipsis">${marker.contents}</div>' + 
-			        //'                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>' + 
-			        //'                <div><a href="http://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' + 
-			        '            </div>' + 
-			        '        </div>' + 
-			        '    </div>' +    
-			        '</div>'
+			        latlng: null,
+					category: null,
+					overlay: null
 			    }<c:if test="${!index.last}">,</c:if>
 			</c:forEach>
 		];
+			<c:forEach items="${markerList}" var="marker" varStatus="index">
+					positions[${index.index}].latlng = new daum.maps.LatLng("${marker.x_coordinate}", "${marker.y_coordinate}");
+					positions[${index.index}].category = "${marker.category}";
+					
+					positions[${index.index}].overlay = new daum.maps.CustomOverlay({});
+					
+					var wrap = document.createElement('div');
+					wrap.setAttribute("class", "wrap");
+					
+					var info = document.createElement('div');
+					info.setAttribute("class", "info");
+					
+					var title = document.createElement('div');
+					title.setAttribute("class", "title");
+					
+					var close = document.createElement('div');
+					close.setAttribute("class", "close");
+					close.onclick = function() {positions[${index.index}].overlay.setMap(null);};
+					close.setAttribute("title", "닫기");
+					
+					var body = document.createElement('div');
+					body.setAttribute("class", "body");
+					
+					var img = document.createElement('div');
+					img.setAttribute("class", "img");
+					
+					var img_img = document.createElement('img');
+					img_img.setAttribute("src", "http://cfile181.uf.daum.net/image/250649365602043421936D");
+					img_img.setAttribute("width", "73");
+					img_img.setAttribute("height", "70");
+					
+					var desc = document.createElement('div');
+					desc.setAttribute("class", "desc");
+					
+					var ellipsis = document.createElement('div');
+					ellipsis.setAttribute("class", "ellipsis");
+					
+					var jibun_ellipsis = document.createElement('div');
+					jibun_ellipsis.setAttribute("class", "jibun ellipsis");
+					
+					title.appendChild(document.createTextNode("${marker.title}"));
+					ellipsis.appendChild(document.createTextNode("${marker.contents}"));
+					
+			        desc.appendChild(ellipsis);
+			        img.appendChild(img_img);
+			        body.appendChild(img);
+			        body.appendChild(desc);
+			        title.appendChild(close);
+			        info.appendChild(title);
+			        info.appendChild(body);
+			        wrap.appendChild(info);
+					
+					positions[${index.index}].overlay.setContent(wrap);
+					positions[${index.index}].overlay.setMap(map);
+			</c:forEach>
 		
 		drawMarker();
 		
@@ -86,22 +123,20 @@
 			    // 마커를 생성합니다
 			    var marker = addMarker(positions[i].latlng, positions[i].category);
 				
-			    var overlay = new daum.maps.CustomOverlay({
-				    content: positions[i].content,
-				    map: map,
-				    position: marker.getPosition()       
-				});
-
-			    overlay.setMap(null);
+			    var Coverlay = positions[i].overlay;
 			    
-			    daum.maps.event.addListener(marker, 'click', OpenOverlay(map, marker, overlay));
+			    Coverlay.setPosition(marker.getPosition());
+
+			    Coverlay.setMap(null);
+			    
+			    daum.maps.event.addListener(marker, 'click', OpenOverlay(map, marker, Coverlay));
 			}
 		}
-
-		// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
-		function closeOverlay() {
-			console.log((this).overlay);
-		    (this).overlay.setMap(null);     
+		
+		function CloseOverlay(overlay) {
+		    return function() {
+		    	overlay.setMap(null);
+		    };
 		}
 		
 		function OpenOverlay(map, marker, overlay) {
