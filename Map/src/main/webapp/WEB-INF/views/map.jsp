@@ -27,6 +27,7 @@
     .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
     .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
     .info .link {color: #5085BB;}
+    .modes {position: absolute;top: 5px;right: 10px;z-index: 1;}
 </style>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -34,7 +35,11 @@
 </head>
 <body>
 
-	<div id="map"></div>
+	<div id="map"></div> 
+	   
+	<p class="modes">
+	    <button onclick="">마커</button>
+	</p>
 	
 	<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ec5b3d5f8ba1f47ea94627cd7422ba47&libraries=drawing"></script>
 	
@@ -97,13 +102,25 @@
 					var ellipsis = document.createElement('div');
 					ellipsis.setAttribute("class", "ellipsis");
 					
+					var tel = document.createElement('div');
+					tel.setAttribute("class", "jibun ellipsis");
+
 					var jibun_ellipsis = document.createElement('div');
 					jibun_ellipsis.setAttribute("class", "jibun ellipsis");
+
+					var road_ellipsis = document.createElement('div');
+					road_ellipsis.setAttribute("class", "jibun ellipsis");
 					
 					title.appendChild(document.createTextNode("${marker.title}"));
 					ellipsis.appendChild(document.createTextNode("${marker.contents}"));
+					tel.appendChild(document.createTextNode("${marker.tel}"));
+					jibun_ellipsis.appendChild(document.createTextNode("${marker.address}"));
+					road_ellipsis.appendChild(document.createTextNode("${marker.road_address}"));
 					
 			        desc.appendChild(ellipsis);
+			        desc.appendChild(tel);
+			        desc.appendChild(jibun_ellipsis);
+			        desc.appendChild(road_ellipsis);
 			        img.appendChild(img_img);
 			        body.appendChild(img);
 			        body.appendChild(desc);
@@ -123,13 +140,13 @@
 			    // 마커를 생성합니다
 			    var marker = addMarker(positions[i].latlng, positions[i].category);
 				
-			    var Coverlay = positions[i].overlay;
+			    var customOverlay = positions[i].overlay;
 			    
-			    Coverlay.setPosition(marker.getPosition());
+			    customOverlay.setPosition(marker.getPosition());
 
-			    Coverlay.setMap(null);
+			    customOverlay.setMap(null);
 			    
-			    daum.maps.event.addListener(marker, 'click', OpenOverlay(map, marker, Coverlay));
+			    daum.maps.event.addListener(marker, 'click', OpenOverlay(map, marker, customOverlay));
 			}
 		}
 		

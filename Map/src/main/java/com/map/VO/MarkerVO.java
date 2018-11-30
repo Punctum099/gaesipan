@@ -5,11 +5,14 @@ public class MarkerVO {
 	private int seq;
 	private double x_coordinate;
 	private double y_coordinate;
+	private String road_address;
+	private String address;
 	private String category;
 	private String title;
 	private String contents;
 	private String tel;
 	private char use_yn;
+	
 	
 	public int getSeq() {
 		return seq;
@@ -28,6 +31,18 @@ public class MarkerVO {
 	}
 	public void setY_coordinate(double y_coordinate) {
 		this.y_coordinate = y_coordinate;
+	}
+	public String getRoad_address() {
+		return road_address;
+	}
+	public void setRoad_address(String road_address) {
+		this.road_address = road_address;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	public String getCategory() {
 		return category;
@@ -59,7 +74,6 @@ public class MarkerVO {
 	public void setUse_yn(char use_yn) {
 		this.use_yn = use_yn;
 	}
-	
 	
 
 }
