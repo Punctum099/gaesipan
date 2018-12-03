@@ -5,6 +5,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+
+<script src="//code.jquery.com/jquery.min.js"></script>
+
+<link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="/css/bootstrap.min-theme.css" rel="stylesheet" type="text/css">
+<link href="/css/semantic.min.css" rel="stylesheet" type="text/css">
+
+<script src="/js/bootstrap.min.js" type="text/javascript"></script>
+
 <style type="text/css">
   #map {
             position: absolute;
@@ -27,10 +36,23 @@
     .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
     .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
     .info .link {color: #5085BB;}
-    .modes {position: absolute;top: 5px;right: 10px;z-index: 1;}
+    .modes {position: absolute;top: 20px;right: 30px;z-index: 1;}
+    .A {position: absolute;top: 5px;right: 10px;z-index: 1;}
+	#footer {
+	   position: fixed;
+	   bottom:0px;
+	   height:500px;
+	   width:100%;
+	   background:white;
+	   color: black;
+	   z-index: 1;
+	   display: none;
+	}
 </style>
 
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <title>Insert title here</title>
 </head>
 <body>
@@ -38,8 +60,85 @@
 	<div id="map"></div> 
 	   
 	<p class="modes">
-	    <button onclick="">마커</button>
+	    <button id="toggle" class="btn btn-info">입력하기</button>
 	</p>
+
+	 <script type="text/javascript">
+		 jQuery('#toggle').click(function () {  
+		    if($("#footer").css("display") == "none"){   
+		        $('#footer').slideDown();  
+		    } else {  
+		        $('#footer').slideUp();  
+		    }  
+		}); 
+	</script> 
+	
+	<div id="footer">
+		<div class="container"> 
+		<div class="row"> 
+			<div class="col-md-12"> 
+				<div class="page-header"> 
+					<h1>마커 등록하기</h1> 
+				</div> 
+				<form> 
+					<div class="col-xs-6"> 
+						<div class="form-group"> 
+							<label for="title">장소 이름</label> 
+							<input type="text" class="form-control" id="title"placeholder="이름을 적어주세요."> 
+						</div> 
+					</div> 
+					<div class="col-xs-6"> 
+						<div class="form-group">
+							<label for="category">카테고리</label> 
+							<select class="form-control" id="category"> 
+								<option value="음식">음식</option> 
+								<option value="카페">카페</option> 
+								<option value="오락">오락</option> 
+								<option value="기타">기타</option> 
+							</select> 
+						</div> 
+					</div> 
+					<div class="col-xs-12"> 
+						<div class="form-group"> 
+							<label for="contents">설명</label> 
+							<textarea class="form-control" id="contents" rows="5"placeholder="설명을 적어주세요."></textarea> 
+						</div> 
+					</div> 
+					<div class="col-xs-2"> 
+						<div class="form-group"> 
+							<label for="tel">전화번호</label> 
+							<input type="text" class="form-control" id="tel" placeholder="000-0000-0000"> 
+						</div> 
+					</div> 
+					<div class="col-xs-5"> 
+						<div class="form-group"> 
+							<label for="road_address">도로명주소</label> 
+							<input type="text" class="form-control" id="road_address" placeholder="서울특별시 마포구 상수동 와우산로 94"> 
+						</div> 
+					</div> 
+					<div class="col-xs-5"> 
+						<div class="form-group"> 
+							<label for="address">지번주소</label> 
+							<input type="text" class="form-control" id="address" placeholder="서울 마포구 상수동 72-1"> 
+						</div> 
+					</div> 
+					<div class="form-group"> 
+						<input type="hidden" id="x_coordinate" value=""> 
+					</div> 
+					<div class="form-group">  
+						<input type="hidden" id="y_coordinate" value=""> 
+					</div> 
+					<div class="col-xs-12"> 
+						<div class="form-group"> 
+							<button type="submit" class="btn btn-info">입력</button> 
+						</div> 
+					</div> 
+				</form> 
+			</div> 
+		</div> 
+	</div>
+		
+	</div>
 	
 	<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ec5b3d5f8ba1f47ea94627cd7422ba47&libraries=drawing"></script>
 	
