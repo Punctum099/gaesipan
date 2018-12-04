@@ -14,8 +14,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	use_yn='Y';
     </select>
 
-	<!-- <insert id="markerInsert" parameterType="com.map.VO.MarkerVO">
-        INSERT INTO map_marker (x_coordinate, y_coordinate, category, use_yn) 
-        VALUES (#{x_coordinate}, #{y_coordinate}, '기타', 'Y');
-    </insert> -->
+	<insert id="markerInsert" parameterType="com.map.VO.MarkerVO">
+		INSERT INTO 
+			marker 
+			(
+				x_coordinate, 
+				y_coordinate, 
+				road_address, 
+				address, 
+				category, 
+				title, 
+				contents, 
+				tel, 
+				use_yn
+			) 
+        VALUES 
+        (
+	        #{x_coordinate}, 
+	        #{y_coordinate}, 
+	        #{road_address}, 
+	        #{address}, 
+	        #{category}, 
+	        #{title}, 
+	        #{contents}, 
+	        #{tel}, 
+	        'Y'
+        );
+    </insert>
 </mapper>      

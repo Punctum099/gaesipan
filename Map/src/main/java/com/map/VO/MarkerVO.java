@@ -3,8 +3,8 @@ package com.map.VO;
 public class MarkerVO {
 
 	private int seq;
-	private double x_coordinate;
-	private double y_coordinate;
+	private String x_coordinate;
+	private String y_coordinate;
 	private String road_address;
 	private String address;
 	private String category;
@@ -20,16 +20,16 @@ public class MarkerVO {
 	public void setSeq(int seq) {
 		this.seq = seq;
 	}
-	public double getX_coordinate() {
+	public String getX_coordinate() {
 		return x_coordinate;
 	}
-	public void setX_coordinate(double x_coordinate) {
+	public void setX_coordinate(String x_coordinate) {
 		this.x_coordinate = x_coordinate;
 	}
-	public double getY_coordinate() {
+	public String getY_coordinate() {
 		return y_coordinate;
 	}
-	public void setY_coordinate(double y_coordinate) {
+	public void setY_coordinate(String y_coordinate) {
 		this.y_coordinate = y_coordinate;
 	}
 	public String getRoad_address() {
