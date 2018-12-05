@@ -7,11 +7,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="markerList" resultType="com.map.VO.MarkerVO">
         SELECT 
+			category.seq, 
+			x_coordinate, 
+			y_coordinate, 
+			road_address, 
+			address, 
+			name, 
+			category_seq, 
+			title, 
+			contents, 
+			tel, 
+			use_yn 
+		FROM 
+			marker 
+		INNER JOIN 
+			category 
+		ON 
+			category.seq = marker.category_seq 
+		WHERE 
+			use_yn='Y';
+    </select>
+    
+    <select id="categoryList" resultType="com.map.VO.MarkerVO">
+        SELECT 
         	* 
         FROM 
-        	marker 
-        WHERE 
-        	use_yn='Y';
+        	category;
     </select>
 
 	<insert id="markerInsert" parameterType="com.map.VO.MarkerVO">
@@ -22,7 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				y_coordinate, 
 				road_address, 
 				address, 
-				category, 
+				category_seq, 
 				title, 
 				contents, 
 				tel, 
@@ -34,11 +55,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	        #{y_coordinate}, 
 	        #{road_address}, 
 	        #{address}, 
-	        #{category}, 
+	        #{category_seq}, 
 	        #{title}, 
 	        #{contents}, 
 	        #{tel}, 
 	        'Y'
         );
+    </insert>
+    
+	<insert id="categoryInsert" parameterType="com.map.VO.MarkerVO">
+		INSERT INTO 
+			category 
+			(
+				name, 
+				kind
+			) 
+			VALUES 
+			(
+				#{name}, 
+				#{kind}
+			);
     </insert>
 </mapper>      

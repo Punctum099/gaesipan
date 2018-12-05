@@ -37,17 +37,30 @@
     .info .link {color: #5085BB;}
     .title {font-weight:bold;display:block;}
     .bAddr {padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
-    .modes {position: absolute;top: 20px;right: 30px;z-index: 1;}
+    .input_marker {position: absolute;top: 20px;right: 30px;z-index: 1;}
+    .input_category {position: absolute;top: 70px;right: 30px;z-index: 1;}
     .A {position: absolute;top: 5px;right: 10px;z-index: 1;}
-	#footer {
+	#marking {
 	   position: fixed;
 	   bottom:0px;
-	   height:500px;
+	   height:50%;
 	   width:100%;
 	   background:white;
 	   color: black;
 	   z-index: 1;
 	   display: none;
+	   overflow:auto;
+	}
+	#addCategory {
+	   position: fixed;
+	   bottom:0px;
+	   height:40%;
+	   width:100%;
+	   background:white;
+	   color: black;
+	   z-index: 1;
+	   display: none;
+	   overflow:auto;
 	}
 </style>
 
@@ -60,92 +73,140 @@
 
 	<div id="map"></div> 
 	   
-	<p class="modes">
-	    <button id="toggle" class="btn btn-info">입력하기</button>
+	<p class="input_marker">
+	    <button id="toggle_1" class="btn btn-info">입력</button>
+	</p>
+	
+	<p class="input_category">
+	    <button id="toggle_2" class="btn btn-info">카테고리 추가</button>
 	</p>
 
 	 <script type="text/javascript">
-	 jQuery('#toggle').click(function () {  
-		    if($("#footer").css("display") == "none"){   
-		        $('#footer').slideDown();  	//보이게한다
-		        document.getElementById("toggle").className = "btn btn-danger";
-		        $("#toggle").html("취소");
+	 jQuery('#toggle_1').click(function () {  
+		    if($("#marking").css("display") == "none"){   
+		        $('#marking').slideDown();  	//보이게한다
+		        document.getElementById("toggle_1").className = "btn btn-danger";
+		        $("#toggle_1").html("취소");
+		        $("#toggle_2").prop("disabled", true);
 		    } else {  
-		        $('#footer').slideUp();  	//안 보이게한다
-		        document.getElementById("toggle").className = "btn btn-info";
-		        $("#toggle").html("입력");
+		        $('#marking').slideUp();  	//안 보이게한다
+		        document.getElementById("toggle_1").className = "btn btn-info";
+		        $("#toggle_1").html("입력");
 		        infowindow.close();
 		        userMarker.setMap(null);
+		        $("#toggle_2").prop("disabled", false);
+		    }  
+		}); 
+	 
+	 jQuery('#toggle_2').click(function () {  
+		    if($("#addCategory").css("display") == "none"){   
+		        $('#addCategory').slideDown();  	//보이게한다
+		        document.getElementById("toggle_2").className = "btn btn-danger";
+		        $("#toggle_2").html("취소");
+		        $("#toggle_1").prop("disabled", true);
+		    } else {  
+		        $('#addCategory').slideUp();  	//안 보이게한다
+		        document.getElementById("toggle_2").className = "btn btn-info";
+		        $("#toggle_2").html("카테고리 추가");
+		        infowindow.close();
+		        userMarker.setMap(null);
+		        $("#toggle_1").prop("disabled", false);
 		    }  
 		}); 
 	</script> 
 	
-	<div id="footer">
+	<div id="marking">
 		<div class="container"> 
-		<div class="row"> 
-			<div class="col-md-12"> 
-				<div class="page-header"> 
-					<h1>마커 등록하기</h1> 
+			<div class="row"> 
+				<div class="col-md-12"> 
+					<div class="page-header"> 
+						<h1>마커 등록하기</h1> 
+					</div> 
+					<form method="POST" action="/markerInsert"> 
+						<div class="col-xs-6"> 
+							<div class="form-group"> 
+								<label for="title">장소 이름</label> 
+								<input type="text" class="form-control" id="title" name="title" placeholder="이름을 적어주세요."> 
+							</div> 
+						</div> 
+						<div class="col-xs-6"> 
+							<div class="form-group">
+								<label for="category">카테고리</label> 
+								<select class="form-control" id="category" name="category_seq"> 
+									<c:forEach items="${categoryList}" var="category" varStatus="index">
+										<option value="${category.seq}">${category.name}</option> 
+									</c:forEach> 
+								</select> 
+							</div> 
+						</div> 
+						<div class="col-xs-12"> 
+							<div class="form-group"> 
+								<label for="contents">설명</label> 
+								<textarea class="form-control" id="contents" name="contents" rows="5" placeholder="설명을 적어주세요."></textarea> 
+							</div> 
+						</div> 
+						<div class="col-xs-2"> 
+							<div class="form-group"> 
+								<label for="tel">전화번호</label> 
+								<input type="text" class="form-control" id="tel" name="tel" placeholder="000-0000-0000"> 
+							</div> 
+						</div> 
+						<div class="col-xs-5"> 
+							<div class="form-group"> 
+								<label for="road_address">도로명주소</label> 
+								<input type="text" class="form-control" id="road_address" name="road_address" placeholder="서울특별시 마포구 상수동 와우산로 94"> 
+							</div> 
+						</div> 
+						<div class="col-xs-5"> 
+							<div class="form-group"> 
+								<label for="address">지번주소</label> 
+								<input type="text" class="form-control" id="address" name="address" placeholder="서울 마포구 상수동 72-1"> 
+							</div> 
+						</div> 
+						<div class="form-group"> 
+							<input type="hidden" id="x_coordinate" name="x_coordinate" value=""> 
+						</div> 
+						<div class="form-group">  
+							<input type="hidden" id="y_coordinate" name="y_coordinate" value=""> 
+						</div> 
+						<div class="col-xs-12"> 
+							<div class="form-group"> 
+								<button type="submit" class="btn btn-primary">입력</button> 
+								<button type="button" class="btn btn-info" id="findingMarker">지번 주소로 마커 찾기</button>
+							</div> 
+						</div> 
+					</form> 
 				</div> 
-				<form method="POST" action="/markerInsert"> 
-					<div class="col-xs-6"> 
-						<div class="form-group"> 
-							<label for="title">장소 이름</label> 
-							<input type="text" class="form-control" id="title" name="title" placeholder="이름을 적어주세요."> 
-						</div> 
-					</div> 
-					<div class="col-xs-6"> 
-						<div class="form-group">
-							<label for="category">카테고리</label> 
-							<select class="form-control" id="category" name="category"> 
-								<option value="음식">음식</option> 
-								<option value="카페">카페</option> 
-								<option value="오락">오락</option> 
-								<option value="기타">기타</option> 
-							</select> 
-						</div> 
-					</div> 
-					<div class="col-xs-12"> 
-						<div class="form-group"> 
-							<label for="contents">설명</label> 
-							<textarea class="form-control" id="contents" name="contents" rows="5" placeholder="설명을 적어주세요."></textarea> 
-						</div> 
-					</div> 
-					<div class="col-xs-2"> 
-						<div class="form-group"> 
-							<label for="tel">전화번호</label> 
-							<input type="text" class="form-control" id="tel" name="tel" placeholder="000-0000-0000"> 
-						</div> 
-					</div> 
-					<div class="col-xs-5"> 
-						<div class="form-group"> 
-							<label for="road_address">도로명주소</label> 
-							<input type="text" class="form-control" id="road_address" name="road_address" placeholder="서울특별시 마포구 상수동 와우산로 94"> 
-						</div> 
-					</div> 
-					<div class="col-xs-5"> 
-						<div class="form-group"> 
-							<label for="address">지번주소</label> 
-							<input type="text" class="form-control" id="address" name="address" placeholder="서울 마포구 상수동 72-1"> 
-						</div> 
-					</div> 
-					<div class="form-group"> 
-						<input type="hidden" id="x_coordinate" name="x_coordinate" value=""> 
-					</div> 
-					<div class="form-group">  
-						<input type="hidden" id="y_coordinate" name="y_coordinate" value=""> 
-					</div> 
-					<div class="col-xs-12"> 
-						<div class="form-group"> 
-							<button type="submit" class="btn btn-info">입력</button> 
-							<button type="button" class="btn btn-info" id="findingMarker">지번 주소로 마커 찾기</button>
-						</div> 
-					</div> 
-				</form> 
 			</div> 
-		</div> 
+		</div>
 	</div>
-		
+	
+	<div id="addCategory">
+		<div class="container"> 
+			<div class="row"> 
+				<div class="col-md-12"> 
+					<div class="page-header"> 
+						<h1>카테고리 추가하기</h1> 
+					</div> 
+					<form method="POST" action="#"> 
+						<div class="col-xs-6"> 
+							<div class="form-group"> 
+								<label for="title">카테고리 이름</label> 
+								<input type="text" class="form-control" id="title" name="title" placeholder="이름을 적어주세요."> 
+							</div> 
+						</div> 
+						<div class="form-group"> 
+							<input type="hidden" id="kind" name="kind" value="user"> 
+						</div> 
+						<div class="col-xs-12"> 
+							<div class="form-group"> 
+								<button type="submit" class="btn btn-primary">입력</button> 
+							</div> 
+						</div> 
+					</form> 
+				</div> 
+			</div> 
+		</div>
 	</div>
 	
 	<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ec5b3d5f8ba1f47ea94627cd7422ba47&libraries=services"></script>
@@ -180,7 +241,7 @@
 		];
 			<c:forEach items="${markerList}" var="marker" varStatus="index">
 					positions[${index.index}].latlng = new daum.maps.LatLng("${marker.x_coordinate}", "${marker.y_coordinate}");
-					positions[${index.index}].category = "${marker.category}";
+					positions[${index.index}].category = "${marker.name}";
 					
 					positions[${index.index}].overlay = new daum.maps.CustomOverlay({});
 					
@@ -223,17 +284,22 @@
 
 					var road_ellipsis = document.createElement('div');
 					road_ellipsis.setAttribute("class", "jibun ellipsis");
+
+					var category = document.createElement('div');
+					category.setAttribute("class", "jibun ellipsis");
 					
 					title.appendChild(document.createTextNode("${marker.title}"));
 					ellipsis.appendChild(document.createTextNode("${marker.contents}"));
 					tel.appendChild(document.createTextNode("${marker.tel}"));
 					jibun_ellipsis.appendChild(document.createTextNode("${marker.address}"));
 					road_ellipsis.appendChild(document.createTextNode("${marker.road_address}"));
+					category.appendChild(document.createTextNode("카테고리 : ${marker.name}"));
 					
 			        desc.appendChild(ellipsis);
 			        desc.appendChild(tel);
 			        desc.appendChild(jibun_ellipsis);
 			        desc.appendChild(road_ellipsis);
+			        desc.appendChild(category);
 			        img.appendChild(img_img);
 			        body.appendChild(img);
 			        body.appendChild(desc);
@@ -299,7 +365,7 @@
 		                            detailAddr + 
 		                        '</div>';
 
-		            if($("#footer").css("display") != "none"){
+		            if($("#marking").css("display") != "none"){
 			            // 마커를 클릭한 위치에 표시합니다 
 			            userMarker.setPosition(mouseEvent.latLng);
 			            userMarker.setMap(map);
@@ -369,7 +435,7 @@
 				                            detailAddr + 
 				                        '</div>';
 
-				            if($("#footer").css("display") != "none"){
+				            if($("#marking").css("display") != "none"){
 					            
 					            // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
 					            infowindow.setContent(content);

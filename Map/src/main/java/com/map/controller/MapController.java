@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,30 +20,49 @@ import com.map.mapper.MarkerMapper;
 @RestController
 public class MapController {
 	
+	private static Logger logger = LoggerFactory.getLogger(MapController.class);
+	
 	@Autowired
     private MarkerMapper markerMapper;
 	
-	@RequestMapping("/map")
+	@RequestMapping(value= {"/map","/"})
     public ModelAndView list() throws Exception{	
+		logger.info("★-★-★-★-★-★-★> 마커가 호출되었습니다. <★-★-★-★-★-★-★");
 		 
 		List<MarkerVO> marker = markerMapper.markerList();
+		List<MarkerVO> category = markerMapper.categoryList();
+
+		//ModelAndView view = new ModelAndView("map","markerList",marker);
+		//↑이것과 ↓이것은 동일하다
+		ModelAndView view = new ModelAndView();
+		view.setViewName("map");
+		view.addObject("markerList", marker);
+		view.addObject("categoryList", category);
 		
-        return new ModelAndView("map","markerList",marker);
+        return view;
     }
 	
 	@RequestMapping(value="/markerInsert",method=RequestMethod.POST)
-    public String markerInsert(@ModelAttribute("MarkerVO") @Valid MarkerVO marker, BindingResult result) throws Exception{
+    public ModelAndView markerInsert(@ModelAttribute("MarkerVO") @Valid MarkerVO marker, BindingResult result) throws Exception{
 		
-		System.out.println(marker);
-		System.out.println(marker.getAddress());
-		System.out.println(marker.getX_coordinate());
-		System.out.println(marker.getY_coordinate());
-		System.out.println(marker.getCategory());
-		System.out.println(marker.getContents());
-		System.out.println(marker.getTitle());
+		logger.info("★-★-★-★-★-★-★> marker_title : " + marker.getTitle() + " <★-★-★-★-★-★-★");
+		logger.info("★-★-★-★-★-★-★> marker_contents : " + marker.getContents() + " <★-★-★-★-★-★-★");
+		logger.info("★-★-★-★-★-★-★> marker_category_seq : " + marker.getCategory_seq() + " <★-★-★-★-★-★-★");
 		
 		markerMapper.markerInsert(marker);
 		
-		 return "redirect://localhost:8080/map";
+		return list();
+    }
+	
+	@RequestMapping(value="/categoryInsert",method=RequestMethod.POST)
+    public ModelAndView categoryInsert(@ModelAttribute("MarkerVO") @Valid MarkerVO marker, BindingResult result) throws Exception{
+		
+		logger.info("★-★-★-★-★-★-★> marker_seq : " + marker.getSeq() + " <★-★-★-★-★-★-★");
+		logger.info("★-★-★-★-★-★-★> marker_name : " + marker.getName() + " <★-★-★-★-★-★-★");
+		logger.info("★-★-★-★-★-★-★> marker_kind : " + marker.getKind() + " <★-★-★-★-★-★-★");
+		
+		markerMapper.categoryInsert(marker);
+		
+		return list();
     }
 }

@@ -7,7 +7,9 @@ public class MarkerVO {
 	private String y_coordinate;
 	private String road_address;
 	private String address;
-	private String category;
+	private String name;
+	private int category_seq;
+	private String kind;
 	private String title;
 	private String contents;
 	private String tel;
@@ -44,11 +46,23 @@ public class MarkerVO {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public String getCategory() {
-		return category;
+	public String getName() {
+		return name;
 	}
-	public void setCategory(String category) {
-		this.category = category;
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getCategory_seq() {
+		return category_seq;
+	}
+	public void setCategory_seq(int category_seq) {
+		this.category_seq = category_seq;
+	}
+	public String getKind() {
+		return kind;
+	}
+	public void setKind(String kind) {
+		this.kind = kind;
 	}
 	public String getTitle() {
 		return title;
@@ -75,5 +89,5 @@ public class MarkerVO {
 		this.use_yn = use_yn;
 	}
 	
-
+	
 }
