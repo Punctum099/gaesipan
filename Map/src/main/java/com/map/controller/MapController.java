@@ -55,13 +55,13 @@ public class MapController {
     }
 	
 	@RequestMapping(value="/categoryInsert",method=RequestMethod.POST)
-    public ModelAndView categoryInsert(@ModelAttribute("MarkerVO") @Valid MarkerVO marker, BindingResult result) throws Exception{
+    public ModelAndView categoryInsert(@ModelAttribute("MarkerVO") @Valid MarkerVO category, BindingResult result) throws Exception{
 		
-		logger.info("¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú> marker_seq : " + marker.getSeq() + " <¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú");
-		logger.info("¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú> marker_name : " + marker.getName() + " <¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú");
-		logger.info("¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú> marker_kind : " + marker.getKind() + " <¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú");
+		logger.info("¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú> category_seq : " + category.getSeq() + " <¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú");
+		logger.info("¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú> category_name : " + category.getName() + " <¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú");
+		logger.info("¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú> category_kind : " + category.getKind() + " <¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú-¡Ú");
 		
-		markerMapper.categoryInsert(marker);
+		markerMapper.categoryInsert(category);
 		
 		return list();
     }

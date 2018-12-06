@@ -51,17 +51,34 @@
 	   display: none;
 	   overflow:auto;
 	}
-	#addCategory {
-	   position: fixed;
-	   bottom:0px;
-	   height:40%;
-	   width:100%;
-	   background:white;
-	   color: black;
-	   z-index: 1;
-	   display: none;
-	   overflow:auto;
-	}
+	/* The Modal (background) */
+        #myModal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+    
+        /* Modal Content/Box */
+        #modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 5% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;  
+            width: 32%;
+            height: 80%;
+            border-radius: 15px;         
+            overflow: auto; /* Enable scroll if needed */   
+            overflow-x: hidden;                    
+        }
+        .input_category{
+        	z-index:100;
+        }
 </style>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -78,7 +95,7 @@
 	</p>
 	
 	<p class="input_category">
-	    <button id="toggle_2" class="btn btn-info">카테고리 추가</button>
+	    <button id="toggle_2" class="btn btn-info">카테고리 확인</button>
 	</p>
 
 	 <script type="text/javascript">
@@ -98,21 +115,17 @@
 		    }  
 		}); 
 	 
-	 jQuery('#toggle_2').click(function () {  
-		    if($("#addCategory").css("display") == "none"){   
-		        $('#addCategory').slideDown();  	//보이게한다
+	 function toggle_2 () {  
+		    if($("#myModal").css("display") == "none"){   
+		    	$('#myModal').fadeIn();  	//보이게한다
 		        document.getElementById("toggle_2").className = "btn btn-danger";
 		        $("#toggle_2").html("취소");
-		        $("#toggle_1").prop("disabled", true);
 		    } else {  
-		        $('#addCategory').slideUp();  	//안 보이게한다
+		    	$('#myModal').fadeOut();  	//안 보이게한다
 		        document.getElementById("toggle_2").className = "btn btn-info";
-		        $("#toggle_2").html("카테고리 추가");
-		        infowindow.close();
-		        userMarker.setMap(null);
-		        $("#toggle_1").prop("disabled", false);
+		        $("#toggle_2").html("카테고리 확인");
 		    }  
-		}); 
+		}; 
 	</script> 
 	
 	<div id="marking">
@@ -181,31 +194,50 @@
 		</div>
 	</div>
 	
-	<div id="addCategory">
-		<div class="container"> 
-			<div class="row"> 
-				<div class="col-md-12"> 
-					<div class="page-header"> 
-						<h1>카테고리 추가하기</h1> 
+	<div id="myModal">
+		<div id="modal-content">
+			<div id="addCategory">
+				<div class="container"> 
+					<div class="row"> 
+						<div class="col-md-6"> 
+							<div class="page-header"> 
+								<h1>카테고리</h1> 
+							</div> 
+							<form method="POST" action="/categoryInsert"> 
+								<div class="col-xs-10"> 
+									<div class="form-group"> 
+										<label for="title">카테고리 이름</label> 
+										<input type="text" class="form-control" id="name" name="name" placeholder="새로운 카테고리를 추가하세요."> 
+									</div> 
+								</div> 
+								<div class="form-group"> 
+									<input type="hidden" id="kind" name="kind" value="user"> 
+								</div> 
+								<div class="col-xs-2"> 
+									<div class="form-group"> 
+										<label> 　</label> 
+										<button type="submit" class="btn btn-primary">추가</button> 
+									</div> 
+								</div>
+								<table class="table table-striped">
+									<c:forEach items="${categoryList}" var="category" varStatus="index">
+									    <c:if test="${index.count%4 == 1 || index.count == 1}">
+										    <tr>
+									    </c:if>
+										      <td>${category.name}</td>
+									    <c:if test="${index.count%4 == 0 || index.last}">
+										    </tr>
+									    </c:if>
+									</c:forEach>
+								</table>
+								<div class="col-xs-12"> 
+									<span class="close" onClick="toggle_2();"> 닫기 </span>
+								</div>
+							</form> 
+						</div> 
 					</div> 
-					<form method="POST" action="#"> 
-						<div class="col-xs-6"> 
-							<div class="form-group"> 
-								<label for="title">카테고리 이름</label> 
-								<input type="text" class="form-control" id="title" name="title" placeholder="이름을 적어주세요."> 
-							</div> 
-						</div> 
-						<div class="form-group"> 
-							<input type="hidden" id="kind" name="kind" value="user"> 
-						</div> 
-						<div class="col-xs-12"> 
-							<div class="form-group"> 
-								<button type="submit" class="btn btn-primary">입력</button> 
-							</div> 
-						</div> 
-					</form> 
-				</div> 
-			</div> 
+				</div>
+			</div>
 		</div>
 	</div>
 	
@@ -424,6 +456,7 @@
 	
 			        // 결과값으로 받은 위치를 마커로 표시합니다
 			        userMarker.setPosition(coords);
+			        userMarker.setMap(map);
 	
 				    searchDetailAddrFromCoords(coords, function(result, status) {
 				        if (status === daum.maps.services.Status.OK) {
@@ -457,6 +490,7 @@
 		}
 	
 		document.getElementById('findingMarker').addEventListener('click', findingMarker); // 이벤트 연결
+		document.getElementById('toggle_2').addEventListener('click', toggle_2); // 이벤트 연결
 	</script>
 		    
 </body>
