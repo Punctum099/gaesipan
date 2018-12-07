@@ -99,34 +99,66 @@
 	</p>
 
 	 <script type="text/javascript">
-	 jQuery('#toggle_1').click(function () {  
-		    if($("#marking").css("display") == "none"){   
-		        $('#marking').slideDown();  	//보이게한다
-		        document.getElementById("toggle_1").className = "btn btn-danger";
-		        $("#toggle_1").html("취소");
-		        $("#toggle_2").prop("disabled", true);
-		    } else {  
-		        $('#marking').slideUp();  	//안 보이게한다
-		        document.getElementById("toggle_1").className = "btn btn-info";
-		        $("#toggle_1").html("입력");
-		        infowindow.close();
-		        userMarker.setMap(null);
-		        $("#toggle_2").prop("disabled", false);
-		    }  
-		}); 
-	 
-	 function toggle_2 () {  
-		    if($("#myModal").css("display") == "none"){   
-		    	$('#myModal').fadeIn();  	//보이게한다
-		        document.getElementById("toggle_2").className = "btn btn-danger";
-		        $("#toggle_2").html("취소");
-		    } else {  
-		    	$('#myModal').fadeOut();  	//안 보이게한다
-		        document.getElementById("toggle_2").className = "btn btn-info";
-		        $("#toggle_2").html("카테고리 확인");
-		    }  
-		}; 
+		 jQuery('#toggle_1').click(function () {  
+			    if($("#marking").css("display") == "none"){   
+			        $('#marking').slideDown();  	//보이게한다
+			        document.getElementById("toggle_1").className = "btn btn-danger";
+			        $("#toggle_1").html("취소");
+			        $("#toggle_2").prop("disabled", true);
+			    } else {  
+			        $('#marking').slideUp();  	//안 보이게한다
+			        document.getElementById("toggle_1").className = "btn btn-info";
+			        $("#toggle_1").html("입력");
+			        infowindow.close();
+			        userMarker.setMap(null);
+			        $("#toggle_2").prop("disabled", false);
+			    }  
+			}); 
+		 
+		 function toggle_2 () {  
+			    if($("#myModal").css("display") == "none"){   
+			    	$('#myModal').fadeIn();  	//보이게한다
+			        document.getElementById("toggle_2").className = "btn btn-danger";
+			        $("#toggle_2").html("취소");
+			        $("#name").focus();
+			    } else {  
+			    	$('#myModal').fadeOut();  	//안 보이게한다
+			        document.getElementById("toggle_2").className = "btn btn-info";
+			        $("#toggle_2").html("카테고리 확인");
+			    }  
+			}; 
 	</script> 
+	
+	<script>
+	    function addMarker(){		//ajax 통신으로 마커를 추가하는 함수
+	        $.ajax({
+	            type : 'post',
+	            url : '/markerInsert',
+	            data : {
+	            	"title" : $("#name").val(),
+	            	"category_seq" : $("#category").val(),
+	            	"contents" : $("#contents").val(),
+	            	"tel" : $("#tel").val(),
+	            	"road_address" : $("#road_address").val(),
+	            	"address" : $("#address").val(),
+	            	"x_coordinate" : $("#x_coordinate").val(),
+	            	"y_coordinate" : $("#y_coordinate").val()
+	            },
+	            dataType : 'json',
+	            success : function(json){
+	            	if(json.check == "true"){
+	            		
+	            	}else{
+	            		
+	            	}
+	            },
+	            error: function(xhr, status, error){
+	            	console.log(status);
+	            	console.log("error : " + error);
+	            }
+	        });
+	    }
+	</script>
 	
 	<div id="marking">
 		<div class="container"> 
@@ -147,7 +179,7 @@
 								<label for="category">카테고리</label> 
 								<select class="form-control" id="category" name="category_seq"> 
 									<c:forEach items="${categoryList}" var="category" varStatus="index">
-										<option value="${category.seq}">${category.name}</option> 
+										<option id="option_${category.seq}" value="${category.seq}">${category.name}</option> 
 									</c:forEach> 
 								</select> 
 							</div> 
@@ -194,49 +226,87 @@
 		</div>
 	</div>
 	
+	<script>
+	    function addCategory(){		//ajax 통신으로 카테고리를 추가하는 함수
+	        $.ajax({
+	            type : 'post',
+	            url : '/categoryInsert',
+	            data : {
+	            	"name" : $("#name").val(),
+	            	"kind" : $("#kind").val(),
+	            	"category_seq" : $("#category_seq").val()
+	            },
+	            dataType : 'json',
+	            success : function(json){
+	            	if(json.check == "true"){
+	            		$("#name").val("");
+		                var modal = '';
+		                if((json.category_seq - 1) % 4 == 0){
+		                	modal += '<tr id=\"tr_' + json.category_seq + '\"><td id=\"td_' + json.category_seq + '\">' + json.name + '</td></tr>';
+			                $("#tr_" + (json.category_seq - 4)).after(modal);
+		                }else{
+		                	modal += '<td id=\"td_' + json.category_seq + '\">' + json.name + '</td>';
+			                $("#td_" + (json.category_seq - 1)).after(modal);
+		                }
+		                var input = '';
+		                input = '<option id="option_' + json.category_seq + '" value="' + json.category_seq + '">' + json.name + '</option>';
+		                $("#option_" + (json.category_seq - 1)).after(input);
+								
+	            	}else{
+	            		alert("카테고리가 정상적으로 입력되지 않았습니다. 다시 시도해주시기 바랍니다.");
+	            	}
+	            },
+	            error: function(xhr, status, error){
+	            	console.log(status);
+	            	console.log("error : " + error);
+	                alert("죄송합니다. 알 수 없는 에러가 발생하였으니 페이지를 새로고침 해 주시기 바랍니다.");
+	            }
+	        });
+	    }
+	</script>
+	
 	<div id="myModal">
 		<div id="modal-content">
-			<div id="addCategory">
-				<div class="container"> 
-					<div class="row"> 
-						<div class="col-md-6"> 
-							<div class="page-header"> 
-								<h1>카테고리</h1> 
-							</div> 
-							<form method="POST" action="/categoryInsert"> 
-								<div class="col-xs-10"> 
-									<div class="form-group"> 
-										<label for="title">카테고리 이름</label> 
-										<input type="text" class="form-control" id="name" name="name" placeholder="새로운 카테고리를 추가하세요."> 
-									</div> 
-								</div> 
-								<div class="form-group"> 
-									<input type="hidden" id="kind" name="kind" value="user"> 
-								</div> 
-								<div class="col-xs-2"> 
-									<div class="form-group"> 
-										<label> 　</label> 
-										<button type="submit" class="btn btn-primary">추가</button> 
-									</div> 
-								</div>
-								<table class="table table-striped">
-									<c:forEach items="${categoryList}" var="category" varStatus="index">
-									    <c:if test="${index.count%4 == 1 || index.count == 1}">
-										    <tr>
-									    </c:if>
-										      <td>${category.name}</td>
-									    <c:if test="${index.count%4 == 0 || index.last}">
-										    </tr>
-									    </c:if>
-									</c:forEach>
-								</table>
-								<div class="col-xs-12"> 
-									<span class="close" onClick="toggle_2();"> 닫기 </span>
-								</div>
-							</form> 
+			<div class="container"> 
+				<div class="row"> 
+					<div class="col-md-6"> 
+						<div class="page-header"> 
+							<span class="close" onClick="toggle_2();"> 닫기 </span>
+							<h1>카테고리</h1> 
 						</div> 
+						<form method="POST" action="/categoryInsert" onsubmit="return false;"> 
+							<div class="col-xs-10"> 
+								<div class="form-group"> 
+									<label for="title">카테고리 이름</label> 
+									<input type="text" class="form-control" id="name" name="name" placeholder="새로운 카테고리를 추가하세요."> 
+								</div> 
+							</div> 
+							<div class="form-group"> 
+								<input type="hidden" id="kind" name="kind" value="user"> 
+							</div> 
+							<div class="col-xs-2"> 
+								<div class="form-group"> 
+									<label> 　</label> 
+									<button type="button" class="btn btn-primary" onClick="addCategory()">추가</button>
+								</div> 
+							</div>
+							<table class="table table-striped" id="categoryTable">
+								<c:forEach items="${categoryList}" var="category" varStatus="index">
+								    <c:if test="${index.count%4 == 1 || index.count == 1}">
+								    	<tr id="tr_${index.count}">
+								    </c:if>
+									    <td id="td_${index.count}">${category.name}</td>
+								    <c:if test="${index.count%4 == 0 || index.last}">
+									    </tr>
+								    </c:if>
+							</c:forEach>
+								</table>
+						</form> 
+						<div class="col-xs-12"> 
+							<span class="close" onClick="toggle_2();"> 닫기 </span>
+						</div>
 					</div> 
-				</div>
+				</div> 
 			</div>
 		</div>
 	</div>
@@ -259,14 +329,20 @@
 
 		var userMarker = new daum.maps.Marker(), // 클릭한 위치를 표시할 마커입니다
 		    infowindow = new daum.maps.InfoWindow({zindex:1}); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
+			
+		drawMarker();
 		
-		var markers = [];
+		//마커를 그리는 함수
+		function drawMarker(){
+		
+		//var markers = [];
 		
 		var positions = [
 			<c:forEach items="${markerList}" var="marker" varStatus="index">
 				{
 			        latlng: null,
 					category: null,
+					title: null,
 					overlay: null
 			    }<c:if test="${!index.last}">,</c:if>
 			</c:forEach>
@@ -274,6 +350,7 @@
 			<c:forEach items="${markerList}" var="marker" varStatus="index">
 					positions[${index.index}].latlng = new daum.maps.LatLng("${marker.x_coordinate}", "${marker.y_coordinate}");
 					positions[${index.index}].category = "${marker.name}";
+					positions[${index.index}].title = "${marker.title}";
 					
 					positions[${index.index}].overlay = new daum.maps.CustomOverlay({});
 					
@@ -343,13 +420,10 @@
 					positions[${index.index}].overlay.setContent(wrap);
 					positions[${index.index}].overlay.setMap(map);
 			</c:forEach>
-		
-		drawMarker();
-		
-		function drawMarker(){
+			
 			for (var i = 0; i < positions.length; i ++) {
 			    // 마커를 생성합니다
-			    var marker = addMarker(positions[i].latlng, positions[i].category);
+			    var marker = makingMarker(positions[i].latlng, positions[i].title);
 				
 			    var customOverlay = positions[i].overlay;
 			    
@@ -359,7 +433,7 @@
 			    
 			    daum.maps.event.addListener(marker, 'click', OpenOverlay(map, marker, customOverlay));
 			}
-		}
+		}// drawMarker가 끝나는 지점
 		
 		function CloseOverlay(overlay) {
 		    return function() {
@@ -373,14 +447,14 @@
 		    };
 		}
 		
-		function addMarker(position, category) {
+		function makingMarker(position, title) {
 		    		marker = new daum.maps.Marker({
 		            position: position, // 마커의 위치
-		            title: category
+		            title: title
 		        });
 
 		    marker.setMap(map); // 지도 위에 마커를 표출합니다
-		    markers.push(marker);  // 배열에 생성된 마커를 추가합니다
+		    //markers.push(marker);  // 배열에 생성된 마커를 추가합니다
 
 		    return marker;
 		}

@@ -27,7 +27,7 @@ public class MapController {
 	
 	@RequestMapping(value= {"/map","/"})
     public ModelAndView list() throws Exception{	
-		logger.info("★-★-★-★-★-★-★> 마커가 호출되었습니다. <★-★-★-★-★-★-★");
+		logger.info("★-★-★-★-★-★-★> 페이지가 호출되었습니다. <★-★-★-★-★-★-★");
 		 
 		List<MarkerVO> marker = markerMapper.markerList();
 		List<MarkerVO> category = markerMapper.categoryList();
@@ -49,20 +49,70 @@ public class MapController {
 		logger.info("★-★-★-★-★-★-★> marker_contents : " + marker.getContents() + " <★-★-★-★-★-★-★");
 		logger.info("★-★-★-★-★-★-★> marker_category_seq : " + marker.getCategory_seq() + " <★-★-★-★-★-★-★");
 		
-		markerMapper.markerInsert(marker);
+		String check = "none";
+		int count = 0;
+		
+		count = markerMapper.markerInsert(marker);
+		
+		if(count > 0) {
+			check = "true";
+		} else {
+			check = "false";
+		}
+		
+		String personJson;
+		
+		personJson = "{\"category_seq\":\""+marker.getSeq()
+			        +"\",\"name\":\""+marker.getName()
+			        +"\",\"check\":\""+check+"\"}";
 		
 		return list();
     }
 	
 	@RequestMapping(value="/categoryInsert",method=RequestMethod.POST)
-    public ModelAndView categoryInsert(@ModelAttribute("MarkerVO") @Valid MarkerVO category, BindingResult result) throws Exception{
+    public String categoryInsert(@ModelAttribute("MarkerVO") @Valid MarkerVO category, BindingResult result) throws Exception{
 		
-		logger.info("★-★-★-★-★-★-★> category_seq : " + category.getSeq() + " <★-★-★-★-★-★-★");
-		logger.info("★-★-★-★-★-★-★> category_name : " + category.getName() + " <★-★-★-★-★-★-★");
-		logger.info("★-★-★-★-★-★-★> category_kind : " + category.getKind() + " <★-★-★-★-★-★-★");
+		String check = "none";
+		int count = 0;
+		count = markerMapper.categoryInsert(category);
+		MarkerVO lastCategory = markerMapper.lastCategory();
 		
-		markerMapper.categoryInsert(category);
+		if(count > 0) {
+			check = "true";
+		} else {
+			check = "false";
+		}
+
+		logger.info("★-★-★-★-★-★-★> category_seq : " + lastCategory.getSeq() + " <★-★-★-★-★-★-★");
+		logger.info("★-★-★-★-★-★-★> category_name : " + lastCategory.getName() + " <★-★-★-★-★-★-★");
+		logger.info("★-★-★-★-★-★-★> category_kind : " + lastCategory.getKind() + " <★-★-★-★-★-★-★");
 		
-		return list();
+		String personJson;
+		
+		personJson = "{\"category_seq\":\""+lastCategory.getSeq()
+			        +"\",\"name\":\""+lastCategory.getName()
+			        +"\",\"check\":\""+check+"\"}";
+		
+		logger.info("★-★-★-★-★-★-★> 입력된 카테고리의 개수 : " + count + " <★-★-★-★-★-★-★");
+		
+		return personJson;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

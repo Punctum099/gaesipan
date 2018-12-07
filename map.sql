@@ -63,8 +63,11 @@ INSERT INTO category (name, kind) VALUES ('술집', 'admin');
 
 #SELECT * FROM marker WHERE use_yn='Y';
 
+#DELETE FROM marker WHERE seq = 18;
 
 #SELECT * FROM category;
+
+#SELECT * FROM category ORDER BY seq DESC LIMIT 1;
 
 /*
 SELECT 

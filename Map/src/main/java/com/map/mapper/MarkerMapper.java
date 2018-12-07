@@ -6,13 +6,15 @@ import com.map.VO.MarkerVO;
 
 public interface MarkerMapper {
 	
-	   public void markerInsert(MarkerVO marker) throws Exception;
+	   public int markerInsert(MarkerVO marker) throws Exception;
 
-	   public void categoryInsert(MarkerVO marker) throws Exception;
+	   public int categoryInsert(MarkerVO marker) throws Exception;
 	   
 	   //public List<MarkerVO> markerList(MarkerVO marker)throws Exception; 
 	   
 	   public List<MarkerVO> markerList()throws Exception; 
 	   
 	   public List<MarkerVO> categoryList()throws Exception;
+	   
+	   public MarkerVO lastCategory()throws Exception;
 }
