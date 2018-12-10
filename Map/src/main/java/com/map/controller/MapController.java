@@ -43,16 +43,17 @@ public class MapController {
     }
 	
 	@RequestMapping(value="/markerInsert",method=RequestMethod.POST)
-    public ModelAndView markerInsert(@ModelAttribute("MarkerVO") @Valid MarkerVO marker, BindingResult result) throws Exception{
+    public String markerInsert(@ModelAttribute("MarkerVO") @Valid MarkerVO marker_1, BindingResult result) throws Exception{
 		
-		logger.info("★-★-★-★-★-★-★> marker_title : " + marker.getTitle() + " <★-★-★-★-★-★-★");
-		logger.info("★-★-★-★-★-★-★> marker_contents : " + marker.getContents() + " <★-★-★-★-★-★-★");
-		logger.info("★-★-★-★-★-★-★> marker_category_seq : " + marker.getCategory_seq() + " <★-★-★-★-★-★-★");
+		logger.info("★-★-★-★-★-★-★> marker_title : " + marker_1.getTitle() + " <★-★-★-★-★-★-★");
+		logger.info("★-★-★-★-★-★-★> marker_contents : " + marker_1.getContents() + " <★-★-★-★-★-★-★");
+		logger.info("★-★-★-★-★-★-★> marker_category_seq : " + marker_1.getCategory_seq() + " <★-★-★-★-★-★-★");
 		
 		String check = "none";
 		int count = 0;
 		
-		count = markerMapper.markerInsert(marker);
+		count = markerMapper.markerInsert(marker_1);
+		MarkerVO marker_2 = markerMapper.lastMarker();
 		
 		if(count > 0) {
 			check = "true";
@@ -62,11 +63,18 @@ public class MapController {
 		
 		String personJson;
 		
-		personJson = "{\"category_seq\":\""+marker.getSeq()
-			        +"\",\"name\":\""+marker.getName()
+		personJson = "{\"seq\":\""+marker_2.getSeq()
+        			+"\",\"x_coordinate\":\""+marker_2.getX_coordinate()
+			        +"\",\"y_coordinate\":\""+marker_2.getY_coordinate()
+			        +"\",\"road_address\":\""+marker_2.getRoad_address()
+			        +"\",\"address\":\""+marker_2.getAddress()
+			        +"\",\"name\":\""+marker_2.getName()
+			        +"\",\"title\":\""+marker_2.getTitle()
+			        +"\",\"contents\":\""+marker_2.getContents()
+			        +"\",\"tel\":\""+marker_2.getTel()
 			        +"\",\"check\":\""+check+"\"}";
 		
-		return list();
+		return personJson;
     }
 	
 	@RequestMapping(value="/categoryInsert",method=RequestMethod.POST)
@@ -75,7 +83,7 @@ public class MapController {
 		String check = "none";
 		int count = 0;
 		count = markerMapper.categoryInsert(category);
-		MarkerVO lastCategory = markerMapper.lastCategory();
+		MarkerVO lastCategory = markerMapper.lastCategory();	//카테고리 테이블에서만 검색
 		
 		if(count > 0) {
 			check = "true";
@@ -97,8 +105,31 @@ public class MapController {
 		
 		return personJson;
     }
+	
+	@RequestMapping(value="/markerDelete",method=RequestMethod.POST)
+	public String markerDelete(@ModelAttribute("MarkerVO") @Valid MarkerVO Marker, BindingResult result) throws Exception{
+		
+		logger.info("★-★-★-★-★-★-★> " + Marker.getSeq() + "번 마커가 삭제되었습니다. <★-★-★-★-★-★-★");
+		
+		String check = "none";
+		int count = 0;
+		
+		count = markerMapper.markerDelete(Marker.getSeq());
+		
+		if(count > 0) {
+			check = "true";
+		} else {
+			check = "false";
+		}
+		
+		String personJson;
+		
+		personJson = "{\"seq\":\""+Marker.getSeq()
+			        +"\",\"check\":\""+check+"\"}";
+		
+		return personJson;
+	}
 }
-
 
 
 

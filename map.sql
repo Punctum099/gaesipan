@@ -19,7 +19,7 @@ CREATE TABLE marker
     `contents`      TEXT             NOT NULL    COMMENT '내용', 
     `tel`           VARCHAR(26)      NULL        COMMENT '전화번호', 
     `use_yn`        ENUM('Y','N')    NOT NULL    COMMENT '삭제 여부', 
-    PRIMARY KEY (seq, x_coordinate, y_coordinate, address)
+    PRIMARY KEY (seq)
 );
 
 ALTER TABLE marker COMMENT '지도에 찍히는 마크에 관한 테이블';
@@ -63,7 +63,9 @@ INSERT INTO category (name, kind) VALUES ('술집', 'admin');
 
 #SELECT * FROM marker WHERE use_yn='Y';
 
-#DELETE FROM marker WHERE seq = 18;
+#SELECT COUNT(*) FROM marker WHERE use_yn='Y';
+
+#DELETE FROM marker WHERE seq = 52;
 
 #SELECT * FROM category;
 
@@ -71,7 +73,7 @@ INSERT INTO category (name, kind) VALUES ('술집', 'admin');
 
 /*
 SELECT 
-	category.seq, 
+	marker.seq, 
 	x_coordinate, 
 	y_coordinate, 
 	road_address, 
@@ -92,9 +94,7 @@ WHERE
 	use_yn='Y';
 */
 
-
-
-
+#UPDATE marker SET use_yn = 'n' WHERE seq = 1;
 
 
 

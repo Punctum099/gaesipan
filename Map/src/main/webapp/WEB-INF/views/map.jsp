@@ -32,7 +32,7 @@
     .info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
     .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: pre-line;}
     .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
-    .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
+    .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;color: #888;overflow: hidden;}
     .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
     .info .link {color: #5085BB;}
     .title {font-weight:bold;display:block;}
@@ -99,7 +99,7 @@
 	</p>
 
 	 <script type="text/javascript">
-		 jQuery('#toggle_1').click(function () {  
+	 	function toggle_1 () {  
 			    if($("#marking").css("display") == "none"){   
 			        $('#marking').slideDown();  	//보이게한다
 			        document.getElementById("toggle_1").className = "btn btn-danger";
@@ -113,7 +113,7 @@
 			        userMarker.setMap(null);
 			        $("#toggle_2").prop("disabled", false);
 			    }  
-			}); 
+			}; 
 		 
 		 function toggle_2 () {  
 			    if($("#myModal").css("display") == "none"){   
@@ -130,12 +130,20 @@
 	</script> 
 	
 	<script>
-	    function addMarker(){		//ajax 통신으로 마커를 추가하는 함수
+		function Checking(){
+			var contents = $("#contents").val();
+			contents = contents.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+			console.log(contents);
+			$("#contents").val(contents);
+			addMarker();
+		}
+		
+		function addMarker(){		//ajax 통신으로 마커를 추가하는 함수
 	        $.ajax({
 	            type : 'post',
 	            url : '/markerInsert',
 	            data : {
-	            	"title" : $("#name").val(),
+	            	"title" : $("#title").val(),
 	            	"category_seq" : $("#category").val(),
 	            	"contents" : $("#contents").val(),
 	            	"tel" : $("#tel").val(),
@@ -147,9 +155,122 @@
 	            dataType : 'json',
 	            success : function(json){
 	            	if(json.check == "true"){
+	            		positions.push({
+	            			seq : json.seq, 
+	            			latlng : new daum.maps.LatLng(json.x_coordinate, json.y_coordinate),
+	            			category : json.name,
+	            			title : json.title,
+	            			overlay : new daum.maps.CustomOverlay({})
+	            		});
 	            		
+	            		var wrap = document.createElement('div');
+						wrap.setAttribute("class", "wrap");
+						
+						var info = document.createElement('div');
+						info.setAttribute("class", "info");
+						
+						var title = document.createElement('div');
+						title.setAttribute("class", "title");
+						
+						var close = document.createElement('div');
+						close.setAttribute("class", "close");
+						close.onclick = function() {positions[positions.length - 1].overlay.setMap(null);};
+						close.setAttribute("title", "닫기");
+						
+						var body = document.createElement('div');
+						body.setAttribute("class", "body");
+						
+						var form = document.createElement('div');
+
+						var hidden = document.createElement('input');
+						hidden.setAttribute("type", "hidden");
+						hidden.setAttribute("id", "new");
+						hidden.setAttribute("name", json.seq);
+						hidden.setAttribute("value", json.seq);
+						
+						console.log(json.seq);
+						
+						var button = document.createElement('button');
+						button.setAttribute("class", "btn btn-primary");
+						button.onclick = function() {
+							$.ajax({
+					            type : 'post',
+					            url : '/markerDelete',
+					            data : {
+					            	"seq" : $("#new").val()
+					            },
+					            dataType : 'json',
+					            success : function(json){
+					            	if(json.check == "true"){
+					            		markers[json.seq].setMap(null);
+					            		overlays[json.seq].setMap(null);
+					            		console.log("삭제 성공!");
+					            	}else{
+					            		console.log("삭제 실패!");
+					            	}
+					            },
+					            error: function(xhr, status, error){
+					            	alert("code:"+xhr.status+"\n"+"message:"+xhr.responseText+"\n"+"error:"+error);
+					            	console.log(status);
+					            	console.log("error : " + error);
+					                alert("죄송합니다. 알 수 없는 에러가 발생하였으니 페이지를 새로고침 해 주시기 바랍니다.");
+					            }
+					        });
+						};
+						
+						var span = document.createElement('span');
+						span.appendChild(document.createTextNode("삭제"));
+						
+						var desc = document.createElement('div');
+						desc.setAttribute("class", "desc");
+						
+						var ellipsis = document.createElement('div');
+						ellipsis.setAttribute("class", "ellipsis");
+						
+						var tel = document.createElement('div');
+						tel.setAttribute("class", "jibun ellipsis");
+	
+						var jibun_ellipsis = document.createElement('div');
+						jibun_ellipsis.setAttribute("class", "jibun ellipsis");
+	
+						var road_ellipsis = document.createElement('div');
+						road_ellipsis.setAttribute("class", "jibun ellipsis");
+	
+						var category = document.createElement('div');
+						category.setAttribute("class", "jibun ellipsis");
+						
+						title.appendChild(document.createTextNode(json.title));
+						ellipsis.appendChild(document.createTextNode(json.contents));
+						tel.appendChild(document.createTextNode(json.tel));
+						jibun_ellipsis.appendChild(document.createTextNode(json.address));
+						road_ellipsis.appendChild(document.createTextNode(json.road_address));
+						category.appendChild(document.createTextNode("카테고리 : " + json.name));
+						
+						desc.appendChild(ellipsis);
+				        desc.appendChild(tel);
+				        desc.appendChild(jibun_ellipsis);
+				        desc.appendChild(road_ellipsis);
+				        desc.appendChild(category);
+						button.appendChild(span);
+						form.appendChild(button);
+						form.appendChild(hidden);
+				        body.appendChild(desc);
+				        title.appendChild(close);
+				        title.appendChild(form);
+				        info.appendChild(title);
+				        info.appendChild(body);
+				        wrap.appendChild(info);
+						
+						positions[positions.length - 1].overlay.setContent(wrap);
+						positions[positions.length - 1].overlay.setMap(map);
+	            		
+						drawMarker();
+						toggle_1();
+						$("#markerInsert")[0].reset();
+	            		
+	            		console.log("true");
 	            	}else{
-	            		
+	            		console.log("false");
 	            	}
 	            },
 	            error: function(xhr, status, error){
@@ -167,7 +288,7 @@
 					<div class="page-header"> 
 						<h1>마커 등록하기</h1> 
 					</div> 
-					<form method="POST" action="/markerInsert"> 
+					<form method="POST" action="/markerInsert" id="markerInsert"> 
 						<div class="col-xs-6"> 
 							<div class="form-group"> 
 								<label for="title">장소 이름</label> 
@@ -216,7 +337,8 @@
 						</div> 
 						<div class="col-xs-12"> 
 							<div class="form-group"> 
-								<button type="submit" class="btn btn-primary">입력</button> 
+								<button type="button" class="btn btn-primary" onClick="Checking()">검사</button> 
+								<button type="button" class="btn btn-primary" onClick="addMarker()">입력</button> 
 								<button type="button" class="btn btn-info" id="findingMarker">지번 주소로 마커 찾기</button>
 							</div> 
 						</div> 
@@ -251,7 +373,6 @@
 		                var input = '';
 		                input = '<option id="option_' + json.category_seq + '" value="' + json.category_seq + '">' + json.name + '</option>';
 		                $("#option_" + (json.category_seq - 1)).after(input);
-								
 	            	}else{
 	            		alert("카테고리가 정상적으로 입력되지 않았습니다. 다시 시도해주시기 바랍니다.");
 	            	}
@@ -329,17 +450,14 @@
 
 		var userMarker = new daum.maps.Marker(), // 클릭한 위치를 표시할 마커입니다
 		    infowindow = new daum.maps.InfoWindow({zindex:1}); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
-			
-		drawMarker();
 		
-		//마커를 그리는 함수
-		function drawMarker(){
-		
-		//var markers = [];
+		var markers = [];
+		var overlays = [];
 		
 		var positions = [
 			<c:forEach items="${markerList}" var="marker" varStatus="index">
 				{
+					seq: null, 
 			        latlng: null,
 					category: null,
 					title: null,
@@ -348,6 +466,7 @@
 			</c:forEach>
 		];
 			<c:forEach items="${markerList}" var="marker" varStatus="index">
+					positions[${index.index}].seq = "${marker.seq}";
 					positions[${index.index}].latlng = new daum.maps.LatLng("${marker.x_coordinate}", "${marker.y_coordinate}");
 					positions[${index.index}].category = "${marker.name}";
 					positions[${index.index}].title = "${marker.title}";
@@ -371,13 +490,44 @@
 					var body = document.createElement('div');
 					body.setAttribute("class", "body");
 					
-					var img = document.createElement('div');
-					img.setAttribute("class", "img");
+					var form = document.createElement('div');
+
+					var hidden = document.createElement('input');
+					hidden.setAttribute("type", "hidden");
+					hidden.setAttribute("id", "${marker.seq}");
+					hidden.setAttribute("name", "${marker.seq}");
+					hidden.setAttribute("value", "${marker.seq}");
 					
-					var img_img = document.createElement('img');
-					img_img.setAttribute("src", "http://cfile181.uf.daum.net/image/250649365602043421936D");
-					img_img.setAttribute("width", "73");
-					img_img.setAttribute("height", "70");
+					var button = document.createElement('button');
+					button.setAttribute("class", "btn btn-primary");
+					button.onclick = function() {
+						$.ajax({
+				            type : 'post',
+				            url : '/markerDelete',
+				            data : {
+				            	"seq" : $("#${marker.seq}").val()
+				            },
+				            dataType : 'json',
+				            success : function(json){
+				            	if(json.check == "true"){
+				            		markers[json.seq].setMap(null);
+				            		overlays[json.seq].setMap(null);
+				            		console.log("삭제 성공!");
+				            	}else{
+				            		console.log("삭제 실패!");
+				            	}
+				            },
+				            error: function(xhr, status, error){
+				            	alert("code:"+xhr.status+"\n"+"message:"+xhr.responseText+"\n"+"error:"+error);
+				            	console.log(status);
+				            	console.log("error : " + error);
+				                alert("죄송합니다. 알 수 없는 에러가 발생하였으니 페이지를 새로고침 해 주시기 바랍니다.");
+				            }
+				        });
+					};
+					
+					var span = document.createElement('span');
+					span.appendChild(document.createTextNode("삭제"));
 					
 					var desc = document.createElement('div');
 					desc.setAttribute("class", "desc");
@@ -409,10 +559,12 @@
 			        desc.appendChild(jibun_ellipsis);
 			        desc.appendChild(road_ellipsis);
 			        desc.appendChild(category);
-			        img.appendChild(img_img);
-			        body.appendChild(img);
+					button.appendChild(span);
+					form.appendChild(button);
+					form.appendChild(hidden);
 			        body.appendChild(desc);
 			        title.appendChild(close);
+			        title.appendChild(form);
 			        info.appendChild(title);
 			        info.appendChild(body);
 			        wrap.appendChild(info);
@@ -421,15 +573,35 @@
 					positions[${index.index}].overlay.setMap(map);
 			</c:forEach>
 			
-			for (var i = 0; i < positions.length; i ++) {
+		for (var i = 0; i < positions.length; i ++) {
 			    // 마커를 생성합니다
-			    var marker = makingMarker(positions[i].latlng, positions[i].title);
+			    var marker = makingMarker(positions[i].seq, positions[i].latlng, positions[i].title);
+				
+			    var customOverlay = positions[i].overlay;
+			    
+			    customOverlay.setPosition(marker.getPosition());
+			    
+			    customOverlay.setMap(null);
+			    
+			    overlays[positions[i].seq] = customOverlay;
+			    
+			    daum.maps.event.addListener(marker, 'click', OpenOverlay(map, marker, customOverlay));
+			}
+			
+		//사용자가 입력한 마커를 그리는 함수z
+		function drawMarker(){
+			
+		for (var i = positions.length - 1; i < positions.length; i ++) {
+			    // 마커를 생성합니다
+			    var marker = makingMarker(positions[i].seq, positions[i].latlng, positions[i].title);
 				
 			    var customOverlay = positions[i].overlay;
 			    
 			    customOverlay.setPosition(marker.getPosition());
 
 			    customOverlay.setMap(null);
+			    
+			    overlays[positions[i].seq] = customOverlay;
 			    
 			    daum.maps.event.addListener(marker, 'click', OpenOverlay(map, marker, customOverlay));
 			}
@@ -447,14 +619,14 @@
 		    };
 		}
 		
-		function makingMarker(position, title) {
+		function makingMarker(seq, position, title) {
 		    		marker = new daum.maps.Marker({
 		            position: position, // 마커의 위치
 		            title: title
 		        });
 
 		    marker.setMap(map); // 지도 위에 마커를 표출합니다
-		    //markers.push(marker);  // 배열에 생성된 마커를 추가합니다
+		    markers[seq] = marker;  // 배열에 생성된 마커를 추가합니다
 
 		    return marker;
 		}
@@ -564,7 +736,13 @@
 		}
 	
 		document.getElementById('findingMarker').addEventListener('click', findingMarker); // 이벤트 연결
+		document.getElementById('toggle_1').addEventListener('click', toggle_1); // 이벤트 연결
 		document.getElementById('toggle_2').addEventListener('click', toggle_2); // 이벤트 연결
+
+		for(l=0;l<markers.length;l++){
+			console.log(markers[l]);
+			console.log(l);
+		}
 	</script>
 		    
 </body>

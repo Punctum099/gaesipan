@@ -28,6 +28,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			use_yn='Y';
     </select>
     
+    <select id="lastMarker" resultType="com.map.VO.MarkerVO">
+        SELECT 
+			marker.seq, 
+			x_coordinate, 
+			y_coordinate, 
+			road_address, 
+			address, 
+			name, 
+			category_seq, 
+			title, 
+			contents, 
+			tel, 
+			use_yn 
+		FROM 
+			marker 
+		INNER JOIN 
+			category 
+		ON 
+			category.seq = marker.category_seq 
+		WHERE 
+			use_yn='Y' 
+        ORDER BY 
+        	seq DESC 
+        LIMIT 1;
+    </select>
+    
     <select id="categoryList" resultType="com.map.VO.MarkerVO">
         SELECT 
         	* 
@@ -86,4 +112,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				#{kind}
 			);
     </insert>
+
+    <update id="markerDelete" parameterType="int">
+        UPDATE 
+        	marker 
+        SET 
+        	use_yn = 'n' 
+        WHERE 
+        	seq = #{seq};
+    </update>
+    
 </mapper>      

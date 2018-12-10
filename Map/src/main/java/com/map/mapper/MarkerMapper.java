@@ -15,6 +15,10 @@ public interface MarkerMapper {
 	   public List<MarkerVO> markerList()throws Exception; 
 	   
 	   public List<MarkerVO> categoryList()throws Exception;
+	
+	   public int markerDelete(int seq) throws Exception;
 	   
 	   public MarkerVO lastCategory()throws Exception;
+
+	   public MarkerVO lastMarker()throws Exception;
 }
