@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -84,7 +85,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>Insert title here</title>
+<title>Map</title>
 </head>
 <body>
 
@@ -97,8 +98,9 @@
 	<p class="input_category">
 	    <button id="toggle_2" class="btn btn-info">카테고리 확인</button>
 	</p>
-
+	
 	 <script type="text/javascript">
+	 
 	 	function toggle_1 () {  
 			    if($("#marking").css("display") == "none"){   
 			        $('#marking').slideDown();  	//보이게한다
@@ -127,15 +129,43 @@
 			        $("#toggle_2").html("카테고리 확인");
 			    }  
 			}; 
+			 
+			 function toggle_1_Modified (title, contents, name, tel) { 
+			     infowindow.close();
+			     userMarker.setMap(null); 
+				 console.log(title);
+				 console.log(contents);
+				 console.log(name);
+				 console.log(tel);
+ 				 if($("#marking").css("display") == "none"){   
+				     $('#marking').slideDown();  	//보이게한다
+				     document.getElementById("toggle_1").className = "btn btn-danger";
+		    		 $("#toggle_1").html("취소");
+				     $("#toggle_2").prop("disabled", true);
+				 } else {  
+				     $('#marking').slideUp();  	//안 보이게한다
+				     document.getElementById("toggle_1").className = "btn btn-info";
+				     $("#toggle_1").html("입력");
+				     infowindow.close();
+				     userMarker.setMap(null);
+				     $("#toggle_2").prop("disabled", false);
+				 }  
+			}; 
 	</script> 
 	
 	<script>
-		function Checking(){
+		function checking(){
+			toggle_1();
 			var contents = $("#contents").val();
 			contents = contents.replace(/(?:\r\n|\r|\n)/g, '<br/>');
 			console.log(contents);
 			$("#contents").val(contents);
 			addMarker();
+		}
+		
+		function change(aa){
+			var bb = aa.replace(/<br\/>/g, '\r\n');
+			return bb;
 		}
 		
 		function addMarker(){		//ajax 통신으로 마커를 추가하는 함수
@@ -163,7 +193,7 @@
 	            			overlay : new daum.maps.CustomOverlay({})
 	            		});
 	            		
-	            		var wrap = document.createElement('div');
+						var wrap = document.createElement('div');
 						wrap.setAttribute("class", "wrap");
 						
 						var info = document.createElement('div');
@@ -181,18 +211,18 @@
 						body.setAttribute("class", "body");
 						
 						var form = document.createElement('div');
-
+						form.setAttribute("class", "img");
+	
 						var hidden = document.createElement('input');
 						hidden.setAttribute("type", "hidden");
 						hidden.setAttribute("id", "new");
 						hidden.setAttribute("name", json.seq);
 						hidden.setAttribute("value", json.seq);
 						
-						console.log(json.seq);
-						
-						var button = document.createElement('button');
-						button.setAttribute("class", "btn btn-primary");
-						button.onclick = function() {
+						var button_1 = document.createElement('div');
+	 					button_1.setAttribute("class", "btn btn-primary deleteBtn");
+						button_1.innerHTML = "삭제";
+						button_1.onclick = function() {
 							$.ajax({
 					            type : 'post',
 					            url : '/markerDelete',
@@ -218,8 +248,9 @@
 					        });
 						};
 						
-						var span = document.createElement('span');
-						span.appendChild(document.createTextNode("삭제"));
+						var button_2 = document.createElement('button');
+						button_2.setAttribute("class", "btn btn-primary");
+						button_2.innerHTML = "수정";
 						
 						var desc = document.createElement('div');
 						desc.setAttribute("class", "desc");
@@ -246,17 +277,17 @@
 						road_ellipsis.appendChild(document.createTextNode(json.road_address));
 						category.appendChild(document.createTextNode("카테고리 : " + json.name));
 						
-						desc.appendChild(ellipsis);
+				        desc.appendChild(ellipsis);
 				        desc.appendChild(tel);
 				        desc.appendChild(jibun_ellipsis);
 				        desc.appendChild(road_ellipsis);
 				        desc.appendChild(category);
-						button.appendChild(span);
-						form.appendChild(button);
+	 					form.appendChild(button_1);
+						form.appendChild(button_2);
 						form.appendChild(hidden);
 				        body.appendChild(desc);
 				        title.appendChild(close);
-				        title.appendChild(form);
+				        body.appendChild(form);
 				        info.appendChild(title);
 				        info.appendChild(body);
 				        wrap.appendChild(info);
@@ -265,7 +296,6 @@
 						positions[positions.length - 1].overlay.setMap(map);
 	            		
 						drawMarker();
-						toggle_1();
 						$("#markerInsert")[0].reset();
 	            		
 	            		console.log("true");
@@ -337,8 +367,7 @@
 						</div> 
 						<div class="col-xs-12"> 
 							<div class="form-group"> 
-								<button type="button" class="btn btn-primary" onClick="Checking()">검사</button> 
-								<button type="button" class="btn btn-primary" onClick="addMarker()">입력</button> 
+								<button type="button" class="btn btn-primary" onClick="checking()">입력</button> 
 								<button type="button" class="btn btn-info" id="findingMarker">지번 주소로 마커 찾기</button>
 							</div> 
 						</div> 
@@ -378,6 +407,7 @@
 	            	}
 	            },
 	            error: function(xhr, status, error){
+	            	alert("code:"+xhr.status+"\n"+"message:"+xhr.responseText+"\n"+"error:"+error);
 	            	console.log(status);
 	            	console.log("error : " + error);
 	                alert("죄송합니다. 알 수 없는 에러가 발생하였으니 페이지를 새로고침 해 주시기 바랍니다.");
@@ -491,6 +521,7 @@
 					body.setAttribute("class", "body");
 					
 					var form = document.createElement('div');
+					form.setAttribute("class", "img");
 
 					var hidden = document.createElement('input');
 					hidden.setAttribute("type", "hidden");
@@ -498,9 +529,10 @@
 					hidden.setAttribute("name", "${marker.seq}");
 					hidden.setAttribute("value", "${marker.seq}");
 					
-					var button = document.createElement('button');
-					button.setAttribute("class", "btn btn-primary");
-					button.onclick = function() {
+					var button_1 = document.createElement('div');
+ 					button_1.setAttribute("class", "btn btn-primary deleteBtn");
+					button_1.innerHTML = "삭제";
+					button_1.onclick = function() {
 						$.ajax({
 				            type : 'post',
 				            url : '/markerDelete',
@@ -526,8 +558,9 @@
 				        });
 					};
 					
-					var span = document.createElement('span');
-					span.appendChild(document.createTextNode("삭제"));
+					var button_2 = document.createElement('button');
+					button_2.setAttribute("class", "btn btn-primary");
+					button_2.innerHTML = "<button onclick=\"toggle_1_Modified('${marker.title}', '${marker.contents}', '${marker.name}', '${marker.tel}')\">수정</button>";
 					
 					var desc = document.createElement('div');
 					desc.setAttribute("class", "desc");
@@ -548,7 +581,7 @@
 					category.setAttribute("class", "jibun ellipsis");
 					
 					title.appendChild(document.createTextNode("${marker.title}"));
-					ellipsis.appendChild(document.createTextNode("${marker.contents}"));
+					ellipsis.appendChild(document.createTextNode(change("${marker.contents}")));
 					tel.appendChild(document.createTextNode("${marker.tel}"));
 					jibun_ellipsis.appendChild(document.createTextNode("${marker.address}"));
 					road_ellipsis.appendChild(document.createTextNode("${marker.road_address}"));
@@ -559,12 +592,12 @@
 			        desc.appendChild(jibun_ellipsis);
 			        desc.appendChild(road_ellipsis);
 			        desc.appendChild(category);
-					button.appendChild(span);
-					form.appendChild(button);
+ 					form.appendChild(button_1);
+					form.appendChild(button_2);
 					form.appendChild(hidden);
 			        body.appendChild(desc);
 			        title.appendChild(close);
-			        title.appendChild(form);
+			        body.appendChild(form);
 			        info.appendChild(title);
 			        info.appendChild(body);
 			        wrap.appendChild(info);
@@ -572,6 +605,8 @@
 					positions[${index.index}].overlay.setContent(wrap);
 					positions[${index.index}].overlay.setMap(map);
 			</c:forEach>
+			
+			
 			
 		for (var i = 0; i < positions.length; i ++) {
 			    // 마커를 생성합니다
@@ -620,10 +655,10 @@
 		}
 		
 		function makingMarker(seq, position, title) {
-		    		marker = new daum.maps.Marker({
-		            position: position, // 마커의 위치
-		            title: title
-		        });
+		    	marker = new daum.maps.Marker({
+		        position: position, // 마커의 위치
+		        title: title
+		    });
 
 		    marker.setMap(map); // 지도 위에 마커를 표출합니다
 		    markers[seq] = marker;  // 배열에 생성된 마커를 추가합니다
@@ -730,20 +765,11 @@
 			    } 
 			}); 
 		}   
-		
-		function validityCheck(){
-			
-		}
 	
 		document.getElementById('findingMarker').addEventListener('click', findingMarker); // 이벤트 연결
 		document.getElementById('toggle_1').addEventListener('click', toggle_1); // 이벤트 연결
 		document.getElementById('toggle_2').addEventListener('click', toggle_2); // 이벤트 연결
-
-		for(l=0;l<markers.length;l++){
-			console.log(markers[l]);
-			console.log(l);
-		}
 	</script>
-		    
+	
 </body>
 </html>

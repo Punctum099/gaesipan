@@ -65,7 +65,7 @@ INSERT INTO category (name, kind) VALUES ('술집', 'admin');
 
 #SELECT COUNT(*) FROM marker WHERE use_yn='Y';
 
-#DELETE FROM marker WHERE seq = 52;
+#DELETE FROM marker ORDER BY seq DESC LIMIT 1;
 
 #SELECT * FROM category;
 
