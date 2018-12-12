@@ -96,6 +96,30 @@ WHERE
 
 #UPDATE marker SET use_yn = 'n' WHERE seq = 1;
 
+/*
+SELECT 
+	marker.seq, 
+	x_coordinate, 
+	y_coordinate, 
+	road_address, 
+	address, 
+	name, 
+	category_seq, 
+	title, 
+	contents, 
+	tel, 
+	use_yn 
+FROM 
+	marker 
+INNER JOIN 
+	category 
+ON 
+	category.seq = marker.category_seq 
+WHERE 
+	use_yn='Y' AND 
+    marker.seq = 45;
+*/
+
 
 
 

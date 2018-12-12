@@ -54,6 +54,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LIMIT 1;
     </select>
     
+    <select id="selectMarker" parameterType="int" resultType="com.map.VO.MarkerVO">
+		SELECT 
+			marker.seq, 
+			x_coordinate, 
+			y_coordinate, 
+			road_address, 
+			address, 
+			name, 
+			category_seq, 
+			title, 
+			contents, 
+			tel, 
+			use_yn 
+		FROM 
+			marker 
+		INNER JOIN 
+			category 
+		ON 
+			category.seq = marker.category_seq 
+		WHERE 
+			use_yn='Y' AND 
+		    marker.seq = #{seq};
+    </select>
+    
     <select id="categoryList" resultType="com.map.VO.MarkerVO">
         SELECT 
         	* 
@@ -98,6 +122,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	        'Y'
         );
     </insert>
+    
+    <update id="markerUpdate" parameterType="com.map.VO.MarkerVO">
+		UPDATE 
+			marker 
+		SET 
+			title = #{title}, 
+			category_seq = #{category_seq}, 
+			contents = #{contents}, 
+			tel = #{tel}
+		WHERE 
+			seq = #{seq};
+    </update>
     
 	<insert id="categoryInsert" parameterType="com.map.VO.MarkerVO" >
 		INSERT INTO 

@@ -44,7 +44,8 @@ public class MapController {
 	
 	@RequestMapping(value="/markerInsert",method=RequestMethod.POST)
     public String markerInsert(@ModelAttribute("MarkerVO") @Valid MarkerVO marker_1, BindingResult result) throws Exception{
-		
+
+		logger.info("★-★-★-★-★-★-★> 마커가 입력되었습니다. <★-★-★-★-★-★-★");
 		logger.info("★-★-★-★-★-★-★> marker_title : " + marker_1.getTitle() + " <★-★-★-★-★-★-★");
 		logger.info("★-★-★-★-★-★-★> marker_contents : " + marker_1.getContents() + " <★-★-★-★-★-★-★");
 		logger.info("★-★-★-★-★-★-★> marker_category_seq : " + marker_1.getCategory_seq() + " <★-★-★-★-★-★-★");
@@ -73,6 +74,44 @@ public class MapController {
 			        +"\",\"contents\":\""+marker_2.getContents()
 			        +"\",\"tel\":\""+marker_2.getTel()
 			        +"\",\"check\":\""+check+"\"}";
+		
+		return personJson;
+    }
+	
+	@RequestMapping(value="/markerUpdate",method=RequestMethod.POST)
+    public String markerUpdate(@ModelAttribute("MarkerVO") @Valid MarkerVO marker_1, BindingResult result) throws Exception{
+		
+		String check = "none";
+		int count = 0;
+		
+		count = markerMapper.markerUpdate(marker_1);
+		MarkerVO marker_2 = markerMapper.selectMarker(marker_1.getSeq());
+		
+		if(count > 0) {
+			check = "true";
+		} else {
+			check = "false";
+		}
+		
+		String personJson;
+		
+		personJson = "{\"seq\":\""+marker_2.getSeq()
+        			+"\",\"x_coordinate\":\""+marker_2.getX_coordinate()
+			        +"\",\"y_coordinate\":\""+marker_2.getY_coordinate()
+			        +"\",\"road_address\":\""+marker_2.getRoad_address()
+			        +"\",\"address\":\""+marker_2.getAddress()
+			        +"\",\"category_seq\":\""+marker_2.getCategory_seq()
+			        +"\",\"name\":\""+marker_2.getName()
+			        +"\",\"title\":\""+marker_2.getTitle()
+			        +"\",\"contents\":\""+marker_2.getContents()
+			        +"\",\"tel\":\""+marker_2.getTel()
+			        +"\",\"check\":\""+check+"\"}";
+
+		logger.info("★-★-★-★-★-★-★> 마커가 수정되었습니다. <★-★-★-★-★-★-★");
+		logger.info("★-★-★-★-★-★-★> marker_title : " + marker_2.getTitle() + " <★-★-★-★-★-★-★");
+		logger.info("★-★-★-★-★-★-★> marker_contents : " + marker_2.getContents() + " <★-★-★-★-★-★-★");
+		logger.info("★-★-★-★-★-★-★> marker_category_seq : " +marker_2.getCategory_seq() + " <★-★-★-★-★-★-★");
+		logger.info("★-★-★-★-★-★-★> marker_Tel : " + marker_2.getTel() + " <★-★-★-★-★-★-★");
 		
 		return personJson;
     }
