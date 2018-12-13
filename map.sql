@@ -120,6 +120,7 @@ WHERE
     marker.seq = 45;
 */
 
+#DELETE FROM marker WHERE seq > 73 AND seq < 79;
 
 
 

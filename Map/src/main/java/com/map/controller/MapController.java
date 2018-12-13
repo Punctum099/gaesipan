@@ -168,9 +168,39 @@ public class MapController {
 		
 		return personJson;
 	}
+
+	@RequestMapping(value="/markerSelect",method=RequestMethod.POST)
+	public String markerSelect(@ModelAttribute("MarkerVO") @Valid MarkerVO marker_1, BindingResult result) throws Exception{
+		
+		String check = "none";
+		
+		MarkerVO marker_2 = markerMapper.selectMarker(marker_1.getSeq());
+		
+		if(marker_2.getSeq() > 0) {
+			check = "true";
+		} else {
+			check = "false";
+		}
+		
+		String personJson;
+		
+		personJson = "{\"seq\":\""+marker_2.getSeq()
+	    			+"\",\"x_coordinate\":\""+marker_2.getX_coordinate()
+			        +"\",\"y_coordinate\":\""+marker_2.getY_coordinate()
+			        +"\",\"road_address\":\""+marker_2.getRoad_address()
+			        +"\",\"address\":\""+marker_2.getAddress()
+			        +"\",\"category_seq\":\""+marker_2.getCategory_seq()
+			        +"\",\"name\":\""+marker_2.getName()
+			        +"\",\"title\":\""+marker_2.getTitle()
+			        +"\",\"contents\":\""+marker_2.getContents()
+			        +"\",\"tel\":\""+marker_2.getTel()
+			        +"\",\"check\":\""+check+"\"}";
+	
+		logger.info("★-★-★-★-★-★-★> 마커를 가져옵니다. <★-★-★-★-★-★-★");
+		
+		return personJson;
+	}
 }
-
-
 
 
 

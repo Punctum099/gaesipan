@@ -130,18 +130,41 @@
 			    }  
 			}; 
 			 
-			 function toggle_Modify (id, seq, title, contents, category_seq, tel, road_address, address) { 
+			 function toggle_Modify (id, seq) { 
 				if(document.getElementById(id).className == "btn btn-primary"){
 			    	document.getElementById(id).className = "btn btn-danger";
 			    	$('#' + id).text('취소');
 					document.getElementById("road_address").readOnly = true;
 					document.getElementById("address").readOnly = true;
-					$("#title").val(title);
-					$("#contents").val(contents);
-					$("#category").val(category_seq);
-					$("#tel").val(tel);
-					$("#road_address").val(road_address);
-					$("#address").val(address);
+					
+					$.ajax({
+			            type : 'post',
+			            url : '/markerSelect',
+			            data : {
+			            	"seq" : seq
+			            },
+			            dataType : 'json',
+			            success : function(json){
+			            	if(json.check == "true"){
+			            		$("#title").val(json.title);
+								$("#contents").val(json.contents);
+								$("#category").val(json.category_seq);
+								$("#tel").val(json.tel);
+								if(json.road_address != "null"){
+									$("#road_address").val(json.road_address);
+								}
+								$("#address").val(json.address);
+			            		console.log("true");
+			            	}else{
+			            		console.log("false");
+			            	}
+			            },
+			            error: function(xhr, status, error){
+			            	console.log(status);
+			            	console.log("error : " + error);
+			            }
+			        });
+					
 					$("#send").text("수정");
 					document.getElementById("send").setAttribute("onclick", "checking(" + seq + ")");
 				} else {
@@ -171,7 +194,7 @@
 	<script>
 	
 	function markerUpdate(seq){		//ajax 통신으로 마커를 추가하는 함수
-        $.ajax({
+		$.ajax({
             type : 'post',
             url : '/markerUpdate',
             data : {
@@ -187,28 +210,21 @@
             },
             dataType : 'json',
             success : function(json){
-            	if(json.check == "true"){/* 
-            		애초에 지우고 다시 만드는거 말고 그냥 변경하는게 맞다고 본다.
-					$("#title").val(json.title);
+            	if(json.check == "true"){
+            		
+					$("#title_" + json.seq).text(json.title);
 					console.log(json.title);
-					$("#contents").val(json.contents);
+					$("#contents_" + json.seq).text(json.contents);
 					console.log(json.contents);
-					$("#category").val(json.category_seq);
-					console.log(json.category_seq);
-					$("#tel").val(json.tel);
+					$("#name_" + json.seq).text(json.name);
+					console.log(json.name);
+					$("#tel_" + json.seq).text(json.tel);
 					console.log(json.tel);
-					$("#road_address").val(json.road_address);
+					$("#road_address_" + json.seq).text(json.road_address);
 					console.log(json.road_address);
-					$("#address").val(json.address);
-					console.log(json.address);
-					$("#x_coordinate").val(json.x_coordinate);
-					console.log(json.x_coordinate);
-					$("#y_coordinate").val(json.y_coordinate);
-					console.log(json.y_coordinate);
+					$("#address_" + json.seq).text(json.address);
             		
             		toggle_Modify("toggle_Modify_" + json.seq);
-//            		markerDelete(seq);
-//    				addMarker(); */
             		
             		console.log("true");
             	}else{
@@ -325,12 +341,12 @@
 				        desc.appendChild(jibun_ellipsis);
 				        desc.appendChild(road_ellipsis);
 				        desc.appendChild(category);			
-	 					form.innerHTML = "<hr/><button class=\"btn btn-primary\" onclick=\"markerDelete(${marker.seq})\">삭제</button><br/><br/><button id=\"toggle_Modify_${marker.seq}\"class=\"btn btn-primary\" onclick=\"toggle_Modify('toggle_Modify_${marker.seq}', '${marker.seq}', '${marker.title}', '${marker.contents}', '${marker.category_seq}', '${marker.tel}', '${marker.road_address}', '${marker.address}')\">수정</button>";
+	 					form.innerHTML = "<hr/><button class=\"btn btn-primary\" onclick=\"markerDelete(${marker.seq})\">삭제</button><br/><br/><button id=\"toggle_Modify_${marker.seq}\"class=\"btn btn-primary\" onclick=\"toggle_Modify('toggle_Modify_${marker.seq}', '${marker.seq}')\">수정</button>";
 	 					form.appendChild(hidden);
 				        body.appendChild(desc);
-				        title.appendChild(close);
 				        body.appendChild(form);
 				        info.appendChild(title);
+				        info.appendChild(close);
 				        info.appendChild(body);
 				        wrap.appendChild(info);
 						
@@ -377,6 +393,11 @@
 	            }
 	        });
 		};
+		
+		console.log(document.getElementById("toggle_1"));
+		console.log(document.getElementById("title"));
+		console.log(document.getElementById("category"));
+		console.log(document.getElementById("contents"));
 	</script>
 	
 	<div id="marking">
@@ -581,6 +602,7 @@
 					
 					var title = document.createElement('div');
 					title.setAttribute("class", "title");
+					title.setAttribute("id", "title_${marker.seq}");
 					
 					var close = document.createElement('div');
 					close.setAttribute("class", "close");
@@ -607,18 +629,23 @@
 					
 					var ellipsis = document.createElement('div');
 					ellipsis.setAttribute("class", "ellipsis");
+					ellipsis.setAttribute("id", "contents_${marker.seq}");
 					
 					var tel = document.createElement('div');
 					tel.setAttribute("class", "jibun ellipsis");
+					tel.setAttribute("id", "tel_${marker.seq}");
 
 					var jibun_ellipsis = document.createElement('div');
 					jibun_ellipsis.setAttribute("class", "jibun ellipsis");
+					jibun_ellipsis.setAttribute("id", "address_${marker.seq}");
 
 					var road_ellipsis = document.createElement('div');
 					road_ellipsis.setAttribute("class", "jibun ellipsis");
+					road_ellipsis.setAttribute("id", "road_address_${marker.seq}");
 
 					var category = document.createElement('div');
 					category.setAttribute("class", "jibun ellipsis");
+					category.setAttribute("id", "name_${marker.seq}");
 					
 					title.appendChild(document.createTextNode("${marker.title}"));
 					ellipsis.appendChild(document.createTextNode(change("${marker.contents}")));
@@ -632,12 +659,12 @@
 			        desc.appendChild(jibun_ellipsis);
 			        desc.appendChild(road_ellipsis);
 			        desc.appendChild(category);			
- 					form.innerHTML = "<hr/><button class=\"btn btn-primary\" onclick=\"markerDelete(${marker.seq})\">삭제</button><br/><br/><button id=\"toggle_Modify_${marker.seq}\"class=\"btn btn-primary\" onclick=\"toggle_Modify('toggle_Modify_${marker.seq}', '${marker.seq}', '${marker.title}', '${marker.contents}', '${marker.category_seq}', '${marker.tel}', '${marker.road_address}', '${marker.address}')\">수정</button>";
+ 					form.innerHTML = "<hr/><button class=\"btn btn-primary\" onclick=\"markerDelete(${marker.seq})\">삭제</button><br/><br/><button type='button' value='${marker.seq}' id=\"toggle_Modify_${marker.seq}\"class=\"btn btn-primary\" onclick=\"toggle_Modify('toggle_Modify_${marker.seq}', '${marker.seq}')\">수정</button>";
  					form.appendChild(hidden);
 			        body.appendChild(desc);
-			        title.appendChild(close);
 			        body.appendChild(form);
 			        info.appendChild(title);
+			        info.appendChild(close);
 			        info.appendChild(body);
 			        wrap.appendChild(info);
 					
@@ -827,11 +854,6 @@
 			}
 			return true;
 		}
-		
-/* 		for(var i = 0; i < markers.length; i++){
-			console.log("markers[" + i + "] : " + markers[i]);
-			console.log("overlays[" + i + "] : " + overlays[i]);
-		} */
 	</script>
 	
 </body>
