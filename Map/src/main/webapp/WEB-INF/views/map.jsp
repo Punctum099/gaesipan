@@ -213,15 +213,10 @@
             	if(json.check == "true"){
             		
 					$("#title_" + json.seq).text(json.title);
-					console.log(json.title);
 					$("#contents_" + json.seq).text(json.contents);
-					console.log(json.contents);
 					$("#name_" + json.seq).text(json.name);
-					console.log(json.name);
 					$("#tel_" + json.seq).text(json.tel);
-					console.log(json.tel);
 					$("#road_address_" + json.seq).text(json.road_address);
-					console.log(json.road_address);
 					$("#address_" + json.seq).text(json.address);
             		
             		toggle_Modify("toggle_Modify_" + json.seq);
@@ -241,7 +236,6 @@
 		function checking(seq){
 			var contents = $("#contents").val();
 			contents = contents.replace(/(?:\r\n|\r|\n)/g, '<br/>');
-			console.log(contents);
 			$("#contents").val(contents);
 			
 			if(seq == ''){
@@ -294,6 +288,9 @@
 						var close = document.createElement('div');
 						close.setAttribute("class", "close");
 						close.onclick = function() {
+	 						if($("#marking").css("display") != "none" || $("#send").text() == "수정"){
+								toggle_Modify("toggle_Modify_${marker.seq}");
+							}
 								positions[positions.length - 1].overlay.setMap(null);
 								clo = 1;
 							};
@@ -393,11 +390,6 @@
 	            }
 	        });
 		};
-		
-		console.log(document.getElementById("toggle_1"));
-		console.log(document.getElementById("title"));
-		console.log(document.getElementById("category"));
-		console.log(document.getElementById("contents"));
 	</script>
 	
 	<div id="marking">
@@ -607,6 +599,9 @@
 					var close = document.createElement('div');
 					close.setAttribute("class", "close");
 					close.onclick = function() {
+ 						if($("#marking").css("display") != "none" || $("#send").text() == "수정"){
+							toggle_Modify("toggle_Modify_${marker.seq}");
+						}
 							positions[${index.index}].overlay.setMap(null);
 							clo = 1;
 						};
@@ -715,11 +710,18 @@
 		}
 		
 		function OpenOverlay(map, marker, overlay) {
-		    return function() {
-		        infowindow.close();
-		        userMarker.setMap(null);
-		    	overlay.setMap(map);
-		    };
+			return function() {
+			    if($("#marking").css("display") == "none" && $("#send").text() == "입력"){
+			        infowindow.close();
+			        userMarker.setMap(null);		
+			        
+			        for (var i = 0; i < positions.length; i ++) {
+					    overlays[positions[i].seq].setMap(null);
+					}
+			        
+			    	overlay.setMap(map);
+			   	}
+			};
 		}
 		
 		function makingMarker(seq, position, title) {
